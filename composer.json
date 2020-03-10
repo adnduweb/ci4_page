@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Spreadaurora\\Ci4_page\\": "src/"
+            "Spreadaurora\\ci4_page\\": "src/"
         }
     },
     "minimum-stability": "dev",
