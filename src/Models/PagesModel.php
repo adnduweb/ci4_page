@@ -1,9 +1,9 @@
 <?php
 
-namespace Spreadaurora\Ci4_page\Models;
+namespace Spreadaurora\ci4_page\Models;
 
 use CodeIgniter\Model;
-use Spreadaurora\Ci4_page\Entities\Taxe;
+use Spreadaurora\ci4_page\Entities\Page;
 
 class PagesModel extends Model
 {
@@ -20,10 +20,10 @@ class PagesModel extends Model
     protected $primaryKey = 'id_page';
     protected $returnType = Page::class;
     protected $useSoftDeletes = true;
-    protected $allowedFields = ['rate', 'active'];
+    protected $allowedFields = ['id_parent', 'template', 'active', 'no_follow_no_index', 'slug', 'order'];
     protected $useTimestamps = true;
     protected $validationRules = [
-        'rate'            => 'required'
+        'slug'            => 'required'
     ];
     protected $validationMessages = [];
     protected $skipValidation     = false;

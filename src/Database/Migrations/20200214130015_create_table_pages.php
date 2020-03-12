@@ -1,6 +1,6 @@
 <?php
 
-namespace Spreadaurora\Ci4_page\Database\Migrations;
+namespace Spreadaurora\ci4_page\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
@@ -10,11 +10,12 @@ class Migration_create_table_pages extends Migration
     {
         $fields = [
             'id_page'            => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'position'           => ['type' => 'INT', 'constraint' => 11],
-            'template'           => ['type' => 'INT', 'constraint' => 11],
+            'id_parent'          => ['type' => 'INT', 'constraint' => 11],
+            'template'           => ['type' => 'VARCHAR', 'constraint' => 255],
             'active'             => ['type' => 'INT', 'constraint' => 11],
             'no_follow_no_index' => ['type' => 'INT', 'constraint' => 11],
             'slug'               => ['type' => 'VARCHAR', 'constraint' => 255],
+            'order'              => ['type' => 'INT', 'constraint' => 11],
             'created_at'         => ['type' => 'DATETIME', 'null' => true],
             'updated_at'         => ['type' => 'DATETIME', 'null' => true],
             'deleted_at'         => ['type' => 'DATETIME', 'null' => true],
@@ -29,7 +30,7 @@ class Migration_create_table_pages extends Migration
 
 
         $fields = [
-            'page_id_page'           => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'default' => 0],
+            'page_id_page'      => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'default' => 0],
             'id_lang'           => ['type' => 'INT', 'constraint' => 11],
             'name'              => ['type' => 'VARCHAR', 'constraint' => 255],
             'description_short' => ['type' => 'TEXT'],

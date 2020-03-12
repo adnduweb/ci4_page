@@ -12,7 +12,7 @@
             <div class="kt-portlet__body kt-portlet__body--fit">
 
                 <!--begin: Datatable -->
-                <div class="kt-datatable" id="kt_apps_taxes_list_datatable"></div>
+                <div class="kt-datatable" id="kt_apps_pages_list_datatable"></div>
 
                 <!--end: Datatable -->
             </div>
