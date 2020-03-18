@@ -17,7 +17,7 @@
     }],
     "require": {
         "php": "^7.2",
-        "spreadaurora/ci4_page": "^1"
+        "spreadaurora/ci4_menu": "^1"
     },
     "require-dev": {
         "codeigniter4/codeigniter4-standard": "^1.0.1",
