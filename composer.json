@@ -9,16 +9,15 @@
     ],
     "homepage": "https://github.com/adnduweb/ci4_page",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Fabrice Loru",
-            "email": "contacta@adnduweb.com",
-            "homepage": "https://www.adnduweb.com",
-            "role": "Developer"
-        }
-    ],
+    "authors": [{
+        "name": "Fabrice Loru",
+        "email": "contacta@adnduweb.com",
+        "homepage": "https://www.adnduweb.com",
+        "role": "Developer"
+    }],
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "spreadaurora/ci4_page": "^1"
     },
     "require-dev": {
         "codeigniter4/codeigniter4-standard": "^1.0.1",
