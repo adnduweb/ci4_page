@@ -31,47 +31,66 @@ class PagesModel extends Model
     public function __construct()
     {
         parent::__construct();
-        $this->taxe = $this->db->table('pages');
+        $this->page = $this->db->table('pages');
     }
+
+    public function getListByMenu()
+    {
+        $instance = [];
+        $this->page->select('id_page, slug, name, created_at');
+        $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.page_id_page');
+        $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang);
+        $this->page->orderBy('id_page DESC');
+        $pages = $this->page->get()->getResult();
+        if(!empty($pages)){
+            foreach($pages as $page){
+                $instance[] = new Page((array) $page);
+            }
+        }
+        //echo $this->page->getCompiledSelect(); exit;
+        return $instance;
+    }
+
+
 
 
     public function getAllList(int $page, int $perpage, array $sort, array $query)
     {
-        $this->taxe->select(); 
-        $this->taxe->select('created_at as date_create_at');
-        $this->taxe->join($this->tableLang, $this->table . '.'.$this->primaryKey.' = '.$this->tableLang.'.page_id_page');
+        $this->page->select();
+        $this->page->select('created_at as date_create_at');
+        $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.page_id_page');
         if (isset($query['generalSearch']) && !empty($query['generalSearch'])) {
-            $this->taxe->where('deleted_at IS NULL AND (name LIKE "%' . $query['generalSearch'] . '%" OR login_destination LIKE "%' . $query['generalSearch'] . '%") AND id_lang = ' . service('settings')->setting_id_lang);
-            $this->taxe->limit(0, $page);
+            $this->page->where('deleted_at IS NULL AND (name LIKE "%' . $query['generalSearch'] . '%" OR login_destination LIKE "%' . $query['generalSearch'] . '%") AND id_lang = ' . service('settings')->setting_id_lang);
+            $this->page->limit(0, $page);
         } else {
-            $this->taxe->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang);
+            $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang);
             $page = ($page == '1') ? '0' : (($page - 1) * $perpage);
-            $this->taxe->limit($perpage, $page);
+            $this->page->limit($perpage, $page);
         }
 
 
-        $this->taxe->orderBy($sort['field'] . ' ' . $sort['sort']);
+        $this->page->orderBy($sort['field'] . ' ' . $sort['sort']);
 
-        $groupsRow = $this->taxe->get()->getResult();
+        $groupsRow = $this->page->get()->getResult();
 
-        //echo $this->taxe->getCompiledSelect(); exit;
+        //echo $this->page->getCompiledSelect(); exit;
         return $groupsRow;
     }
 
     public function getAllCount(array $sort, array $query)
     {
-        $this->taxe->select($this->table . '.'.$this->primaryKey);
-        $this->taxe->join($this->tableLang, $this->table . '.'.$this->primaryKey.' = '.$this->tableLang.'.page_id_page');
+        $this->page->select($this->table . '.' . $this->primaryKey);
+        $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.page_id_page');
         if (isset($query['generalSearch']) && !empty($query['generalSearch'])) {
-            $this->taxe->where('deleted_at IS NULL AND (name LIKE "%' . $query['generalSearch'] . '%" OR login_destination LIKE "%' . $query['generalSearch'] . '%") AND id_lang = ' . service('settings')->setting_id_lang);
+            $this->page->where('deleted_at IS NULL AND (name LIKE "%' . $query['generalSearch'] . '%" OR login_destination LIKE "%' . $query['generalSearch'] . '%") AND id_lang = ' . service('settings')->setting_id_lang);
         } else {
-            $this->taxe->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang);
+            $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang);
         }
 
-        $this->taxe->orderBy($sort['field'] . ' ' . $sort['sort']);
+        $this->page->orderBy($sort['field'] . ' ' . $sort['sort']);
 
-        $pages = $this->taxe->get();
-        //echo $this->taxe->getCompiledSelect(); exit;
+        $pages = $this->page->get();
+        //echo $this->page->getCompiledSelect(); exit;
         return $pages->getResult();
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace Spreadaurora\ci4_page\Entities;
+<?php
+
+namespace Spreadaurora\ci4_page\Entities;
 
 use CodeIgniter\Entity;
 
@@ -20,11 +22,33 @@ class Page extends Entity
      */
     protected $casts = [];
 
+    public function getId()
+    {
+        return $this->id_page ?? null;
+    }
+    public function getName()
+    {
+        return $this->attributes['name'] ?? null;
+    }
+    public function getSlug()
+    {
+        return $this->attributes['slug'] ?? null;
+    }
 
-
-    public function setNameLang(int $id_lang)
+    public function getNameLang(int $id_lang)
     {
         return $this->pages_langs[$id_lang]->name ?? null;
+    }
+
+    public function getNameAllLang()
+    {
+        $name = [];
+        $i = 0;
+        foreach ($this->pages_langs as $lang) {
+            $name[$lang->id_lang]['name'] = $lang->name;
+            $i++;
+        }
+        return $name ?? null;
     }
 
     public function setpagesLangs()
@@ -91,5 +115,4 @@ class Page extends Entity
             }
         }
     }
-
 }

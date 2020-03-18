@@ -58,7 +58,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 $db->table('pages_langs')->insert($rowLang);
             }
         }
- 
+
         $rowsTabs = [
             [
                 'id_parent'         => 17,
@@ -96,9 +96,9 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 $newInsert = $db->insertID();
                 $i = 0;
                 foreach ($rowsTabsLangs as $rowLang) {
-                        $rowLang['tab_id']   = $newInsert;
-                        // No setting - add the row
-                        $db->table('tabs_langs')->insert($rowLang);
+                    $rowLang['tab_id']   = $newInsert;
+                    // No setting - add the row
+                    $db->table('tabs_langs')->insert($rowLang);
                     $i++;
                 }
             }
@@ -131,13 +131,28 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
             ]
         ];
 
-         // On insére le role par default au user
-         foreach ($rowsPermissionsPages as $row) {
+        // On insére le role par default au user
+        foreach ($rowsPermissionsPages as $row) {
             $tabRow =  $db->table('auth_permissions')->where(['name' => $row['name']])->get()->getRow();
             if (empty($tabRow)) {
                 // No langue - add the row
                 $db->table('auth_permissions')->insert($row);
             }
+        }
+
+        //Gestion des module
+        $rowsModulePages = [
+            'name'       => 'pages',
+            'namespace'  => 'Spreadaurora\ci4_page',
+            'active'     => 1,
+            'version'    => '1.0.2',
+            'created_at' =>  date('Y-m-d H:i:s')
+        ];
+
+        $tabRow =  $db->table('modules')->where(['name' => $rowsModulePages['name']])->get()->getRow();
+        if (empty($tabRow)) {
+            // No langue - add the row
+            $db->table('modules')->insert($rowsModulePages);
         }
     }
 }

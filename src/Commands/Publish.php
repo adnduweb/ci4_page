@@ -76,7 +76,7 @@ class Publish extends BaseCommand
 
         // Models
         if (CLI::prompt('Publish into directory Modules?', ['y', 'n']) == 'y') {
-             $this->publishModules();
+            $this->publishModules();
         }
     }
 
@@ -94,9 +94,9 @@ class Publish extends BaseCommand
     protected function publishModules()
     {
 
-        $this->copydir($this->sourcePath,APPPATH . '/Modules/ci4_page');
+        $this->copydir($this->sourcePath, APPPATH . '/Modules/ci4_page');
 
-        CLI::write('Le Module a été chargé dans l\'application', 'green');
+        CLI::write('Le Module a été chargé dans l\'application. Vous devez charger le module dans le fichier "Autoload"', 'green');
 
         // $models = ['LoginModel', 'UserModel'];
 

@@ -121,6 +121,7 @@ class AdminPagesController extends \App\controllers\Admin\AdminController
 
         // Try to create the user
         $pageBase = new Page($this->request->getPost());
+        $pageBase->slug = "/" . strtolower(preg_replace('/[^a-zA-Z0-9\-]/', '', preg_replace('/\s+/', '-', $pageBase->slug)));
 
         if (!$page->save($pageBase)) {
             Tools::set_message('danger', $page->errors(), lang('Core.warning_error'));

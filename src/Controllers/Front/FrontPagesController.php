@@ -20,7 +20,6 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
     public function show($id)
     { 
         $loccale = 1;
-        //print_r(service('Settings')->setting_supportedLocales);
         $setting_supportedLocales = unserialize(service('Settings')->setting_supportedLocales);
         foreach($setting_supportedLocales as $setting_supportedLocale){
             $v= explode('|', $setting_supportedLocale);
@@ -29,6 +28,7 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
             }
         }
         //$page = $this->tableModel->join('pages_langs', 'pages.id_page = pages_langs.page_id_page')->where(['id_lang'=> service('Settings')->setting_id_lang, 'slug'=> '/'.$id])->getCompiledSelect();
+        //echo $this->tableModel->join('pages_langs', 'pages.id_page = pages_langs.page_id_page')->where(['id_lang'=> service('Settings')->setting_id_lang, 'slug'=> '/'.$id])->getCompiledSelect();; 
         $this->data['page'] = $this->tableModel->join('pages_langs', 'pages.id_page = pages_langs.page_id_page')->where(['id_lang'=>$loccale, 'slug'=> '/'.$id])->get()->getRow();
         if(empty($this->data['page'])){
             throw new \CodeIgniter\Exceptions\PageNotFoundException(lang('Core.Cannot find the page item : {0}', [$id]));
