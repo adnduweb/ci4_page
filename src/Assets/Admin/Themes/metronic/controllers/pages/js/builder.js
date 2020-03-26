@@ -11,14 +11,6 @@ $(document).ready(function() {
             return getTextAreaFieldHTML();
         },
         connectToSortable: ".form_builder_area",
-        //containment: "parent",
-        stop: function(e) {
-            console.log($(e));
-            /*if ($(e.target).attr('id') === "parent-of-buttons") {*/
-            e.stopPropagation();
-            return false;
-            /*  }*/
-        }
     });
 
     $(".form_bal_imagefield").draggable({
