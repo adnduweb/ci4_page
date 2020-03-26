@@ -18,12 +18,12 @@
 </div>
 
 <div class="form-group form-group-sm row">
-    <label for="template" class="col-xl-3 col-lg-3 col-form-label"><?=  ucfirst(lang('Core.template')); ?></label>
+    <label for="template" class="col-xl-3 col-lg-3 col-form-label"><?= ucfirst(lang('Core.template')); ?></label>
     <div class="col-lg-9 col-xl-6">
-    <select required name="template" class="form-control selectpicker file kt-selectpicker" data-actions-box="true" title="<?= ucfirst(lang('Core.choose_one_of_the_following')); ?>"  id="template">
-                <option <?= $form->template  == "default" ? 'selected' : ''; ?> value="default">Standard</option>
-                <option <?= $form->template  == "code" ? 'selected' : ''; ?> value="code">Code</option>
-                <option <?= $form->template  == "custom" ? 'selected' : ''; ?> value="custom">Personnalisé</option>
+        <select required name="template" class="form-control selectpicker file kt-selectpicker" data-actions-box="true" title="<?= ucfirst(lang('Core.choose_one_of_the_following')); ?>" id="template">
+            <option <?= $form->template  == "default" ? 'selected' : ''; ?> value="default">Standard</option>
+            <option <?= $form->template  == "code" ? 'selected' : ''; ?> value="code">Code</option>
+            <option <?= $form->template  == "custom" ? 'selected' : ''; ?> value="custom">Personnalisé</option>
         </select>
     </div>
 </div>
@@ -50,7 +50,7 @@
         <?= form_textarea_spread('description_short', $form->_prepareLang(), 'class="form-control lang"', true); ?>
     </div>
 </div>
- 
+
 <div class="form-group row kt-shape-bg-color-1">
     <label for="description" class="col-xl-3 col-lg-3 col-form-label"><?= ucfirst(lang('Core.description')); ?>* : </label>
     <div class="col-lg-9 col-xl-6">
@@ -84,5 +84,4 @@
     </div>
 </div>
 
-<?php if (! empty($form->id_page)) { ?> <?= form_hidden('id_page', $form->id_page); ?> <?php } ?>
-
+<?php if (!empty($form->id_page)) { ?> <?= form_hidden('id_page', $form->id_page); ?> <?php } ?>

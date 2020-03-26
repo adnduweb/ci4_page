@@ -1,7 +1,7 @@
 <?= $this->extend('/Admin/Themes/metronic/__layouts/layout_1') ?>
 <?= $this->section('main') ?>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" id="kt_content">
-	<?= form_open('', ['id' => 'kt_apps_user_add_user_form', 'class' => 'kt-form', 'novalidate' => false]); ?>
+	<?= form_open_multipart('', ['id' => 'kt_apps_user_add_user_form', 'class' => 'kt-form', 'novalidate' => false]); ?>
 	<input type="hidden" name="action" value="<?= $action; ?>" />
 	<input type="hidden" name="module" value="<?= base64_encode('Spreadaurora\ci4_page'); ?>" />
 	<input type="hidden" name="controller" value="AdminPagesController" />
@@ -53,7 +53,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="tab-pane active" id="kt_user_edit_tab_2" role="tabpanel">
+					<div class="tab-pane" id="kt_user_edit_tab_2" role="tabpanel">
 						<div class="kt-form kt-form--label-right">
 							<div class="kt-form__body">
 								<div class="kt-section kt-section--first">
@@ -67,13 +67,13 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 
 
 	<!-- end:: Content -->
 	<?= form_close(); ?>
 </div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('extra-js') ?>
@@ -82,16 +82,17 @@
 	var KTCkeditor = {
 		init: function() {
 			<?php
-			$setting_supportedLocales = unserialize(service('Settings')->setting_supportedLocales);
 			$i = 1;
-			foreach ($setting_supportedLocales as $k => $v) {
-				$langExplode = explode('|', $v); ?>
-				ClassicEditor.create(document.querySelector("#description_<?= $langExplode[1]; ?>")).then(e => {
+			foreach ($supportedLocales as $k => $v) { ?>
+				ClassicEditor.create(document.querySelector("#description_<?= $k; ?>"), {
+					ui: '<?= $k; ?>',
+					language: '<?= $k; ?>'
+				}).then(e => {
 					console.log(e)
 				}).
 				catch(e => {
 					console.error(e)
-				}) <?php if ($i != count($setting_supportedLocales)) { ?>, <?php } ?>
+				}) <?php if ($i != count($supportedLocales)) { ?>, <?php } ?>
 
 			<?php $i++;
 			} ?>
@@ -102,5 +103,35 @@
 		KTCkeditor.init()
 	});
 </script>
+
+
+<?php if (isset($form->builders) && !empty($form->builders)) { ?>
+	<?php foreach ($form->builders as $builder) { ?>
+		<?php if ($builder->type == "textField" || $builder->type == "textarea") {
+			$field = isset($builder->id_field) ? $builder->id_field : "__field__"; ?>
+			<script>
+				jQuery(document).ready(function() {
+					var portlet<?= $field; ?> = new KTPortlet("kt_portlet_tools<?= $field; ?>");
+					<?php
+					$i = 1;
+					foreach ($supportedLocales as $k => $v) { ?>
+						ClassicEditor.create(document.querySelector("#content<?= $field; ?>_<?= $k; ?>"), {
+							ui: '<?= $k; ?>',
+							language: '<?= $k; ?>'
+						}).then(e => {
+							console.log(e)
+						}).
+						catch(e => {
+							console.error(e)
+						}) <?php if ($i != count($supportedLocales)) { ?>, <?php } ?>
+
+					<?php $i++;
+					} ?>
+
+				});
+			</script>
+		<?php } ?>
+	<?php } ?>
+<?php } ?>
 
 <?= $this->endSection() ?>

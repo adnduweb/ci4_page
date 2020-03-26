@@ -37,8 +37,139 @@ class Page extends Entity
 
     public function getNameLang(int $id_lang)
     {
-        return $this->pages_langs[$id_lang]->name ?? null;
+        foreach ($this->pages_langs as $lang) {
+            if ($id_lang == $lang->id_lang) {
+                return $lang->name ?? null;
+            }
+        }
     }
+
+    public function getDescription(int $id_lang)
+    {
+        foreach ($this->pages_langs as $lang) {
+            if ($id_lang == $lang->id_lang) {
+                return $lang->description ?? null;
+            }
+        }
+    }
+
+    public function get_MetaDescription(int $id_lang)
+    {
+        foreach ($this->pages_langs as $lang) {
+            if ($id_lang == $lang->id_lang) {
+                return $lang->metat_description ?? null;
+            }
+        }
+    }
+
+    public function get_MetaTitle(int $id_lang)
+    {
+        foreach ($this->pages_langs as $lang) {
+            if ($id_lang == $lang->id_lang) {
+                return $lang->meta_title ?? null;
+            }
+        }
+    }
+
+    public function getBuilder(string $id_field, int $id_lang)
+    {
+        foreach ($this->builders as $builder) {
+            if ($id_field == $builder->id_field) {
+                foreach ($builder->builders_langs as $lang) {
+                    if ($id_lang == $lang->id_lang) {
+                        $builder->id_lang = $lang->id_lang;
+                        $builder->content = $lang->content;
+                    }
+                }
+                unset($builder->builders_langs);
+                return $builder ?? null;
+            }
+            return false;
+        }
+    }
+
+    public function getBuilderContent(string $id_field, int $id_lang)
+    {
+        if (!empty($this->builders)) {
+            foreach ($this->builders as $builder) {
+                if ($id_field == $builder->id_field) {
+                    foreach ($builder->builders_langs as $lang) {
+                        if ($id_lang == $lang->id_lang) {
+                            return $lang->content ?? null;
+                        }
+                    }
+                }
+                return null;
+            }
+            return null;
+        }
+    }
+
+    public function getTextarea(string $handle, int $id_lang)
+    {
+        if (!empty($this->builders)) {
+            $i = 0;
+            foreach ($this->builders as $builder) {
+                if ($handle == $builder->handle && $builder->type == "textarea") {
+                    foreach ($builder->builders_langs as $lang) {
+                        if ($id_lang == $lang->id_lang) {
+                            return $lang->content ?? null;
+                        }
+                    }
+                }
+                $i++;
+            }
+            return null;
+        }
+    }
+    public function getTitle(string $handle, int $id_lang)
+    {
+        if (!empty($this->builders)) {
+            $i = 0;
+            foreach ($this->builders as $builder) {
+                if ($handle == $builder->handle && $builder->type == "textfield") {
+                    foreach ($builder->builders_langs as $lang) {
+                        if ($id_lang == $lang->id_lang) {
+                            return $lang->content ?? null;
+                        }
+                    }
+                }
+                $i++;
+            }
+            return null;
+        }
+    }
+
+    public function getImage(string $handle, int $id_lang)
+    {
+        $image = null;
+        if (!empty($this->builders)) {
+            $i = 0;
+
+            foreach ($this->builders as $builder) {
+                if ($handle == $builder->handle && $builder->type == "imagefield") {
+
+                    $getAttrOptions = $getAttrOptions = $builder->getAttrOptions();
+                    if (empty($getAttrOptions))
+                        return $image;
+
+                    $mediasModel = new \App\Models\mediasModel();
+                    $image = $mediasModel->getMediaById($getAttrOptions->media->id_media, $id_lang);
+                    if (empty($image)) {
+                        $image = $mediasModel->where('id_media', $getAttrOptions->media->id_media)->get()->getRow();
+                    }
+                    if (is_object($image))
+                        $image->options = $getAttrOptions;
+                }
+                $i++;
+            }
+        }
+
+        return $image;
+    }
+
+
+
 
     public function getNameAllLang()
     {
@@ -49,21 +180,6 @@ class Page extends Entity
             $i++;
         }
         return $name ?? null;
-    }
-
-    public function setpagesLangs()
-    {
-        if (!empty($this->pages_langs)) {
-            // unset($this->attributes[$this->tableLang][0]);
-            $i = 0;
-            foreach ($this->pages_langs as $lang) {
-                $this->attributes[$this->tableLang][$lang->id_lang] = $lang;
-                $i++;
-            }
-            unset($this->attributes[$this->tableLang][0]);
-        }
-
-        return $this->attributes;
     }
 
 

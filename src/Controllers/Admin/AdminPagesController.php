@@ -10,8 +10,12 @@ use App\Libraries\Tools;
 use Spreadaurora\ci4_page\Entities\Page;
 use Spreadaurora\ci4_page\Models\PagesModel;
 
+
+
 class AdminPagesController extends \App\controllers\Admin\AdminController
 {
+
+    use \Spreadaurora\ci4_page\BuilderTrait;
     /**
      *  * @var Module */
     public $module = true;
@@ -52,6 +56,8 @@ class AdminPagesController extends \App\controllers\Admin\AdminController
     public function renderForm($id = null)
     {
         AssetsBO::add_js([$this->get_current_theme_view('plugins/custom/ckeditor/ckeditor-classic.bundle.js', 'default')]);
+        AssetsBO::add_js([$this->get_current_theme_view('controllers/medias/js/manager.js', 'default')]);
+        AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->controller . '/js/builder.js', 'default')]);
         if (is_null($id)) {
             $this->data['form'] = new Page($this->request->getPost());
         } else {
@@ -61,12 +67,15 @@ class AdminPagesController extends \App\controllers\Admin\AdminController
                 return redirect()->to('/' . env('CI_SITE_AREA') . '/' . user()->id_company . '/public/pages');
             }
         }
+        // print_r($this->data['form']->builders);
+        // exit;
         parent::renderForm($id);
         return view($this->get_current_theme_view('form', 'Spreadaurora/ci4_page'), $this->data);
     }
 
     public function postProcessEdit($param)
     {
+
         // validate
         $page = new PagesModel();
         $rules = [
@@ -82,16 +91,23 @@ class AdminPagesController extends \App\controllers\Admin\AdminController
         $this->lang = $this->request->getPost('lang');
         $pageBase->slug = "/" . strtolower(preg_replace('/[^a-zA-Z0-9\-]/', '', preg_replace('/\s+/', '-', $pageBase->slug)));
 
+
+
+
         if (!$page->save($pageBase)) {
             Tools::set_message('danger', $page->errors(), lang('Core.warning_error'));
             return redirect()->back()->withInput();
         }
         $pageBase->saveLang($this->lang, $pageBase->id_page);
 
+        // On enregistre le Builder si existe
+        $this->saveBuilder($this->request->getPost('builder'));
+
         //On Créer un teamplet si besoin
-        if($pageBase->template == 'code'){
-            if (!file_exists(APPPATH . 'Views/Front/Themes/'.service('settings')->setting_theme_front.'/' . $pageBase->slug .'.php')) {
-                write_file(APPPATH . 'Views/Front/Themes/'.service('settings')->setting_theme_front.'/' . $pageBase->slug .'.php', '<!-- Votre code -->');
+        if ($pageBase->template == 'code') {
+            $file =  $pageBase->id_page == '1' ? 'home' :  $pageBase->slug;
+            if (!file_exists(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
+                write_file(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');
             }
         }
 
@@ -171,6 +187,14 @@ class AdminPagesController extends \App\controllers\Admin\AdminController
                     return $this->respond(['status' => false, 'database' => true, 'display' => 'modal', 'message' => lang('Js.aucun_enregistrement_effectue')], 200);
                 }
             }
+        }
+    }
+
+    public function ajaxProcessDeleteBuilder()
+    {
+        if ($value = $this->request->getPost('value')) {
+            $this->deleteBuilder($value);
+            return $this->respond(['status' => true, 'type' => 'success', 'message' => lang('Js.your_selected_records_have_been_deleted')], 200);
         }
     }
 }

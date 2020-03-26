@@ -42,8 +42,8 @@ class PagesModel extends Model
         $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang);
         $this->page->orderBy('id_page DESC');
         $pages = $this->page->get()->getResult();
-        if(!empty($pages)){
-            foreach($pages as $page){
+        if (!empty($pages)) {
+            foreach ($pages as $page) {
                 $instance[] = new Page((array) $page);
             }
         }
