@@ -2,6 +2,7 @@
 
 namespace Spreadaurora\ci4_page\Controllers\Admin;
 
+use App\Controllers\Admin\AdminController;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -12,7 +13,7 @@ use Spreadaurora\ci4_page\Models\PagesModel;
 
 
 
-class AdminPagesController extends \App\controllers\Admin\AdminController
+class AdminPagesController extends AdminController
 {
 
     use \Spreadaurora\ci4_page\BuilderTrait;
