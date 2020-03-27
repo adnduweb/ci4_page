@@ -59,6 +59,7 @@ class Migration_create_table_pages extends Migration
             'id'           => ['type' => 'VARCHAR', 'constraint' => 128],
             'type'         => ['type' => 'VARCHAR', 'constraint' => 128],
             'options'      => ['type' => 'TEXT'],
+            'order'        => ['type' => 'INT', 'constraint' => 11],
             'created_at'   => ['type' => 'DATETIME', 'null' => true],
             'updated_at'   => ['type' => 'DATETIME', 'null' => true],
             'deleted_at'   => ['type' => 'DATETIME', 'null' => true],

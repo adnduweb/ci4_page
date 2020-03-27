@@ -22,6 +22,7 @@
                         <?php $options = [
                             'acceptedFiles' => '.jpg, .jpeg, .png',
                             'maxFiles' => 1,
+                            'maxFilesize' => 5,
                             'uploadMultiple' => false,
                             'crop' => true,
                             'type' => 'image',

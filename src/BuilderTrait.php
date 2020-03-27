@@ -36,15 +36,22 @@ trait BuilderTrait
             $builderEntitie->handle = strtolower(preg_replace('/[^a-zA-Z0-9\-]/', '', preg_replace('/\s+/', '-', $builderEntitie->handle)));
             if ($builderEntitie->type == 'imagefield') {
                 $getAttrOptions = $builderEntitie->getAttrOptions();
-                print_r($getAttrOptions->media->filename);
-                if (!get_file_info($getAttrOptions->media->filename)) {
-                    $builderEntitie->options = '';
+
+                if (!empty($getAttrOptions)) {
+                    try {
+                        $client = \Config\Services::curlrequest();
+                        $response = $client->request('GET', $getAttrOptions->media->filename);
+                        list($width, $height, $type, $attr) =  getimagesize($getAttrOptions->media->filename);
+                        $getAttrOptions->media->dimensions = ['width' => $width, 'height' => $height];
+                        $builderEntitie->options = json_encode($getAttrOptions);
+                    } catch (\Exception $e) {
+                        $builderEntitie->options = '';
+                    }
                 } else {
-                    list($width, $height, $type, $attr) =  getimagesize($getAttrOptions->media->filename);
-                    $getAttrOptions->media->dimensions = ['width' => $width, 'height' => $height];
-                    $builderEntitie->options = json_encode($getAttrOptions);
+                    $builderEntitie->options = '';
                 }
             }
+            $builderEntitie->order = $i;
 
             if (!$buildersModel->save($builderEntitie)) {
                 throw DataException::forProblemSaving($buildersModel->errors(true));

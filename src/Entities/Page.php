@@ -169,8 +169,6 @@ class Page extends Entity
     }
 
 
-
-
     public function getNameAllLang()
     {
         $name = [];

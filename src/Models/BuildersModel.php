@@ -20,7 +20,7 @@ class BuildersModel extends Model
     protected $primaryKey = 'id_builder';
     protected $returnType = Builder::class;
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['page_id_page', 'id_field', 'handle', 'class', 'id', 'type', 'options'];
+    protected $allowedFields = ['page_id_page', 'id_field', 'handle', 'class', 'id', 'type', 'options', 'order'];
     protected $useTimestamps = true;
     protected $validationRules = ['page_id_page' => 'required'];
     protected $validationMessages = [];

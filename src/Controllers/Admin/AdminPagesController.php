@@ -68,6 +68,14 @@ class AdminPagesController extends AdminController
                 return redirect()->to('/' . env('CI_SITE_AREA') . '/' . user()->id_company . '/public/pages');
             }
         }
+        if (isset($this->data['form']->builders)) {
+            $temp = [];
+            foreach ($this->data['form']->builders as $builder) {
+                $temp[$builder->order] = $builder;
+            }
+            ksort($temp);
+            $this->data['form']->builders = $temp;
+        }
         // print_r($this->data['form']->builders);
         // exit;
         parent::renderForm($id);
