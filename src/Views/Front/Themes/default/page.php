@@ -2,7 +2,8 @@
 <?= $this->section('main') ?>
 <section>
 	<div class="container">
-		<?= $page->description; ?>
+		<h1><?= $page->getNameLang($id_lang); ?></h1>
+		<?= $page->getDescription($id_lang); ?>
 	</div>
 </section>
 <?= $this->endSection() ?>
