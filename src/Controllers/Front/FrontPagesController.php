@@ -8,12 +8,17 @@ use Spreadaurora\ci4_page\Models\PagesModel;
 
 class FrontPagesController extends \App\Controllers\Front\FrontController
 {
-    use \Spreadaurora\ci4_page\BuilderTrait;
+    use \App\Traits\BuilderTrait;
+    use \App\Traits\ModuleTrait;
+    
+    public $name_module = 'pages';
+    protected $idModule;
 
     public function __construct()
     {
         parent::__construct();
         $this->tableModel  = new PagesModel();
+        $this->idModule  = $this->getIdModule();
     }
     public function index()
     {
@@ -40,8 +45,17 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
         $this->data['meta_title'] = $this->data['page']->meta_title;
         $this->data['meta_description'] = $this->data['page']->meta_description;
         $this->data['pageContent'] = $this->data['page'];
-        // print_r($this->data['page']);
-        // exit;
+        $this->data['pageContent']->builders = [];
+        if (!empty($this->getBuilderIdItem($this->data['page']->id_page, $this->idModule))) {
+            $this->data['form']->builders = $this->getBuilderIdItem($id, $this->idModule);
+            $temp = [];
+            foreach ($this->data['pageContent']->builders as $builder) {
+                $temp[$builder->order] = $builder;
+            }
+            ksort($temp);
+            $this->data['pageContent']->builders = $temp;
+        }
+
         if ($this->data['page']->template == 'code') {
             return view($this->get_current_theme_view($this->data['page']->slug, 'default'), $this->data);
         } else {

@@ -16,10 +16,13 @@ use Spreadaurora\ci4_page\Models\PagesModel;
 class AdminPagesController extends AdminController
 {
 
-    use \Spreadaurora\ci4_page\BuilderTrait;
+    use \App\Traits\BuilderTrait;
+    use \App\Traits\ModuleTrait;
     /**
      *  * @var Module */
     public $module = true;
+    public $name_module = 'blog';
+    protected $idModule;
     public $controller = 'pages';
     public $item = 'page';
     public $type = 'Spreadaurora/ci4_page';
@@ -35,6 +38,7 @@ class AdminPagesController extends AdminController
         $this->controller_type = 'adminpages';
         $this->module = "pages";
         $this->tableModel  = new PagesModel();
+        $this->idModule  = $this->getIdModule();
     }
 
     public function renderViewList()
@@ -58,7 +62,7 @@ class AdminPagesController extends AdminController
     {
         AssetsBO::add_js([$this->get_current_theme_view('plugins/custom/ckeditor/ckeditor-classic.bundle.js', 'default')]);
         AssetsBO::add_js([$this->get_current_theme_view('controllers/medias/js/manager.js', 'default')]);
-        AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->controller . '/js/builder.js', 'default')]);
+        AssetsBO::add_js([$this->get_current_theme_view('js/builder.js', 'default')]);
         if (is_null($id)) {
             $this->data['form'] = new Page($this->request->getPost());
         } else {
@@ -68,7 +72,11 @@ class AdminPagesController extends AdminController
                 return redirect()->to('/' . env('CI_SITE_AREA') . '/' . user()->id_company . '/public/pages');
             }
         }
-        if (!empty($this->data['form']->builders)) {
+        $this->data['form']->builders = [];
+        $this->data['form']->id_module = $this->idModule;
+        $this->data['form']->id_item = $id;
+        if (!empty($this->getBuilderIdItem($id, $this->idModule))) {
+            $this->data['form']->builders = $this->getBuilderIdItem($id, $this->idModule);
             $temp = [];
             foreach ($this->data['form']->builders as $builder) {
                 $temp[$builder->order] = $builder;
@@ -76,15 +84,13 @@ class AdminPagesController extends AdminController
             ksort($temp);
             $this->data['form']->builders = $temp;
         }
-        // print_r($this->data['form']->builders);
-        // exit;
+        //print_r($this->data['form']->builders); exit;
         parent::renderForm($id);
         return view($this->get_current_theme_view('form', 'Spreadaurora/ci4_page'), $this->data);
     }
 
     public function postProcessEdit($param)
     {
-
         // validate
         $page = new PagesModel();
         $rules = [
@@ -100,7 +106,18 @@ class AdminPagesController extends AdminController
         $this->lang = $this->request->getPost('lang');
         $pageBase->slug = "/" . strtolower(preg_replace('/[^a-zA-Z0-9\-]/', '', preg_replace('/\s+/', '-', $pageBase->slug)));
 
+        //On Créer un template si besoin
+        if ($pageBase->template == 'code') {
+            $file =  $pageBase->id_page == '1' ? 'home' :  $pageBase->slug;
+            if($file == 'home'){
+                rename(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/home.php', APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/__home.php', );
+            }
+            if (!file_exists(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
+                write_file(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');
+            }
 
+            $pageBase->template = "default";
+        }
 
 
         if (!$page->save($pageBase)) {
@@ -110,16 +127,7 @@ class AdminPagesController extends AdminController
         $pageBase->saveLang($this->lang, $pageBase->id_page);
 
         // On enregistre le Builder si existe
-        $this->saveBuilder($this->request->getPost('builder'));
-
-        //On Créer un teamplet si besoin
-        if ($pageBase->template == 'code') {
-            $file =  $pageBase->id_page == '1' ? 'home' :  $pageBase->slug;
-            if (!file_exists(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
-                write_file(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');
-            }
-        }
-
+        $this->saveBuilder($this->request->getPost('builder')); 
 
         // Success!
         Tools::set_message('success', lang('Core.save_data'), lang('Core.cool_success'));

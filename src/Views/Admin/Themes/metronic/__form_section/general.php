@@ -23,7 +23,6 @@
         <select required name="template" class="form-control selectpicker file kt-selectpicker" data-actions-box="true" title="<?= ucfirst(lang('Core.choose_one_of_the_following')); ?>" id="template">
             <option <?= $form->template  == "default" ? 'selected' : ''; ?> value="default">Standard</option>
             <option <?= $form->template  == "code" ? 'selected' : ''; ?> value="code">Code</option>
-            <option <?= $form->template  == "custom" ? 'selected' : ''; ?> value="custom">Personnalisé</option>
         </select>
     </div>
 </div>

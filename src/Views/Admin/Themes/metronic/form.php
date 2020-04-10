@@ -58,7 +58,7 @@
 							<div class="kt-form__body">
 								<div class="kt-section kt-section--first">
 									<div class="kt-section__body">
-										<?= $this->include('\Spreadaurora\ci4_page\Views\Admin\Themes\metronic\__form_section\builder') ?>
+									<?= $this->include('/Admin/Themes/metronic/__partials/builders/builder') ?>
 									</div>
 								</div>
 							</div>
@@ -127,7 +127,6 @@
 
 					<?php $i++;
 					} ?>
-
 				});
 			</script>
 		<?php } ?>
