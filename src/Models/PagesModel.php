@@ -1,14 +1,14 @@
 <?php
 
-namespace Spreadaurora\ci4_page\Models;
+namespace Adnduweb\Ci4_page\Models;
 
 use CodeIgniter\Model;
-use Spreadaurora\ci4_page\Entities\Page;
+use Adnduweb\Ci4_page\Entities\Page;
 
 class PagesModel extends Model
 {
     use \Tatter\Relations\Traits\ModelTrait;
-    use \Spreadaurora\Ci4_logs\Traits\AuditsTrait;
+    use \Adnduweb\Ci4_logs\Traits\AuditsTrait;
     protected $afterInsert = ['auditInsert'];
     protected $afterUpdate = ['auditUpdate'];
     protected $afterDelete = ['auditDelete'];

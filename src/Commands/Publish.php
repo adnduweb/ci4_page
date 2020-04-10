@@ -1,6 +1,6 @@
 <?php
 
-namespace Spreadaurora\ci4_page\Commands;
+namespace Adnduweb\Ci4_page\Commands;
 
 use Config\Autoload;
 use CodeIgniter\CLI\CLI;
@@ -14,7 +14,7 @@ class Publish extends BaseCommand
      *
      * @var string
      */
-    protected $group = 'SpreadAurora';
+    protected $group = 'Adnduweb';
 
     /**
      * The Command's name

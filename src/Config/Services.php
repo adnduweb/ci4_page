@@ -1,8 +1,8 @@
-<?php namespace Spreadaurora\ci4_page\Config;
+<?php namespace Adnduweb\Ci4_page\Config;
 
 use CodeIgniter\Config\BaseService;
 use CodeIgniter\Database\ConnectionInterface;
-use Spreadaurora\ci4_page\Pages;
+use Adnduweb\Ci4_page\Pages;
 
 class Services extends BaseService
 {

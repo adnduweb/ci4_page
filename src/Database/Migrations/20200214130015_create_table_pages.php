@@ -1,6 +1,6 @@
 <?php
 
-namespace Spreadaurora\ci4_page\Database\Migrations;
+namespace Adnduweb\Ci4_page\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 

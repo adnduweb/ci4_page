@@ -1,16 +1,16 @@
 <?php
 
-namespace Spreadaurora\ci4_page\Controllers\Front;
+namespace Adnduweb\Ci4_page\Controllers\Front;
 
 use CodeIgniter\API\ResponseTrait;
-use Spreadaurora\ci4_page\Entities\Page;
-use Spreadaurora\ci4_page\Models\PagesModel;
+use Adnduweb\Ci4_page\Entities\Page;
+use Adnduweb\Ci4_page\Models\PagesModel;
 
 class FrontPagesController extends \App\Controllers\Front\FrontController
 {
     use \App\Traits\BuilderTrait;
     use \App\Traits\ModuleTrait;
-    
+
     public $name_module = 'pages';
     protected $idModule;
 
@@ -59,7 +59,7 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
         if ($this->data['page']->template == 'code') {
             return view($this->get_current_theme_view($this->data['page']->slug, 'default'), $this->data);
         } else {
-            return view($this->get_current_theme_view('page', 'Spreadaurora/ci4_page'), $this->data);
+            return view($this->get_current_theme_view('page', 'Adnduweb/ci4_page'), $this->data);
         }
     }
 }

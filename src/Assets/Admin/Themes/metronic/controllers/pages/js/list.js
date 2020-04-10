@@ -14,7 +14,7 @@ var KTAppPagesListDatatable = function() {
                                 controller: 'AdminPagesController',
                                 action: 'list',
                                 value: '',
-                                module: window.btoa('Spreadaurora/ci4_page'),
+                                module: window.btoa('Adnduweb/Ci4_page'),
                                 _id_company: _id_company
                             }
                         }
@@ -192,7 +192,7 @@ var KTAppPagesListDatatable = function() {
                                     selected: a.get(),
                                     active: st
                                 },
-                                module: window.btoa('Spreadaurora/ci4_page')
+                                module: window.btoa('Adnduweb/Ci4_page')
                             },
                             dataType: "json",
                             success: function(result, status, xhr) {
@@ -251,7 +251,7 @@ var KTAppPagesListDatatable = function() {
                                 value: {
                                     selected: selected
                                 },
-                                module: window.btoa('Spreadaurora/ci4_page')
+                                module: window.btoa('Adnduweb/Ci4_page')
                             },
                             dataType: "json",
                             success: function(result, status, xhr) {

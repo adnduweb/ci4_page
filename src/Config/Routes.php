@@ -17,7 +17,7 @@
 // On définit la langue dans la route
 
 
-$routes->group(CI_SITE_AREA, ['namespace' => '\Spreadaurora\ci4_page\Controllers\Admin', 'filter' => 'apiauth'], function ($routes) {
+$routes->group(CI_SITE_AREA, ['namespace' => '\Adnduweb\Ci4_page\Controllers\Admin', 'filter' => 'apiauth'], function ($routes) {
 
     $routes->get('(:num)/(:any)/pages', 'AdminPagesController::renderViewList', ['as' => 'page-index']);
     $routes->get('(:num)/(:any)/pages/edit/(:any)', 'AdminPagesController::renderForm/$3');
@@ -27,11 +27,11 @@ $routes->group(CI_SITE_AREA, ['namespace' => '\Spreadaurora\ci4_page\Controllers
 });
 
 //ADN HACK;
-$routes->group('', ['namespace' => '\Spreadaurora\ci4_page\Controllers\Front'], function ($routes) {
+$routes->group('', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front'], function ($routes) {
 
     $locale = '/';
 if (service('Settings')->setting_activer_multilangue == true) {
     $locale = '/{locale}';
-} 
+}
     $routes->get($locale . '/(:segment)', 'FrontPagesController::show/$1');
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spreadaurora\ci4_page\Controllers\Admin;
+namespace Adnduweb\Ci4_page\Controllers\Admin;
 
 use App\Controllers\Admin\AdminController;
 use CodeIgniter\HTTP\RequestInterface;
@@ -8,8 +8,8 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 use App\Libraries\AssetsBO;
 use App\Libraries\Tools;
-use Spreadaurora\ci4_page\Entities\Page;
-use Spreadaurora\ci4_page\Models\PagesModel;
+use Adnduweb\Ci4_page\Entities\Page;
+use Adnduweb\Ci4_page\Models\PagesModel;
 
 
 
@@ -25,7 +25,7 @@ class AdminPagesController extends AdminController
     protected $idModule;
     public $controller = 'pages';
     public $item = 'page';
-    public $type = 'Spreadaurora/ci4_page';
+    public $type = 'Adnduweb/Ci4_page';
     public $pathcontroller  = '/public/pages';
     public $fieldList = 'name';
     public $add = true;
@@ -86,7 +86,7 @@ class AdminPagesController extends AdminController
         }
         //print_r($this->data['form']->builders); exit;
         parent::renderForm($id);
-        return view($this->get_current_theme_view('form', 'Spreadaurora/ci4_page'), $this->data);
+        return view($this->get_current_theme_view('form', 'Adnduweb/Ci4_page'), $this->data);
     }
 
     public function postProcessEdit($param)
@@ -127,7 +127,7 @@ class AdminPagesController extends AdminController
         $pageBase->saveLang($this->lang, $pageBase->id_page);
 
         // On enregistre le Builder si existe
-        $this->saveBuilder($this->request->getPost('builder')); 
+        $this->saveBuilder($this->request->getPost('builder'));
 
         // Success!
         Tools::set_message('success', lang('Core.save_data'), lang('Core.cool_success'));

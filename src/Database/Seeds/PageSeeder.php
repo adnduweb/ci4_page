@@ -1,8 +1,8 @@
 <?php
 
-namespace Spreadaurora\ci4_page\Database\Seeds;
+namespace Adnduweb\Ci4_page\Database\Seeds;
 
-use Spreadaurora\ci4_page\Models\PagesModel;
+use Adnduweb\Ci4_page\Models\PagesModel;
 use joshtronic\LoremIpsum;
 
 class PageSeeder extends \CodeIgniter\Database\Seeder
@@ -67,7 +67,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'right'             => 34,
                 'position'          => 1,
                 'section'           => 0,
-                'module'            => 'Spreadaurora\ci4_page',
+                'module'            => 'Adnduweb\Ci4_page',
                 'class_name'        => 'AdminPages',
                 'active'            =>  1,
                 'icon'              => '',
@@ -105,7 +105,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         }
 
         /**
-         * 
+         *
          * Gestion des permissions
          */
         $rowsPermissionsPages = [
@@ -143,7 +143,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         //Gestion des module
         $rowsModulePages = [
             'name'       => 'pages',
-            'namespace'  => 'Spreadaurora\ci4_page',
+            'namespace'  => 'Adnduweb\Ci4_page',
             'active'     => 1,
             'version'    => '1.0.2',
             'created_at' =>  date('Y-m-d H:i:s')
