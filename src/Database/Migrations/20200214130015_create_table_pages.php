@@ -14,7 +14,7 @@ class Migration_create_table_pages extends Migration
             'template'           => ['type' => 'VARCHAR', 'constraint' => 255],
             'active'             => ['type' => 'INT', 'constraint' => 11],
             'no_follow_no_index' => ['type' => 'INT', 'constraint' => 11],
-            'slug'               => ['type' => 'VARCHAR', 'constraint' => 255],
+            'handle'             => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
             'order'              => ['type' => 'INT', 'constraint' => 11],
             'created_at'         => ['type' => 'DATETIME', 'null' => true],
             'updated_at'         => ['type' => 'DATETIME', 'null' => true],
@@ -30,21 +30,23 @@ class Migration_create_table_pages extends Migration
 
 
         $fields = [
-            'page_id_page'      => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'default' => 0],
+            'id_page'           => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'default' => 0],
             'id_lang'           => ['type' => 'INT', 'constraint' => 11],
             'name'              => ['type' => 'VARCHAR', 'constraint' => 255],
+            'name_2'            => ['type' => 'VARCHAR', 'constraint' => 255],
             'description_short' => ['type' => 'TEXT'],
             'description'       => ['type' => 'TEXT'],
             'meta_title'        => ['type' => 'VARCHAR', 'constraint' => 255],
             'meta_description'  => ['type' => 'VARCHAR', 'constraint' => 255],
             'tags'              => ['type' => 'VARCHAR', 'constraint' => 255],
+            'slug'              => ['type' => 'VARCHAR', 'constraint' => 255],
         ];
 
         $this->forge->addField($fields);
         // $this->forge->addKey(['id_item', 'id_lang'], false, true);
         $this->forge->addKey('id_item');
         $this->forge->addKey('id_lang');
-        $this->forge->addForeignKey('page_id_page', 'pages', 'id_page', false, 'CASCADE');
+        $this->forge->addForeignKey('id_page', 'pages', 'id_page', false, 'CASCADE');
         $this->forge->createTable('pages_langs', true);
 
     }

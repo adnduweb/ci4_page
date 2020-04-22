@@ -18,7 +18,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'template'           => 'default',
                 'active'             => 1,
                 'no_follow_no_index' => 0,
-                'slug'               => '/',
+                'handle'             => null,
                 'order'              => 1,
                 'created_at'         => date('Y-m-d H:i:s'),
             ]
@@ -26,14 +26,16 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         ];
         $rowsLang = [
             [
-                'page_id_page'      => 1,
+                'id_page'      => 1,
                 'id_lang'           => 1,
-                'name'              => 'Page d\'accueil',
+                'name'              => 'Welcome to CodeIgniter',
+                'name_2'            => 'The small framework with powerful features',
                 'description_short' => $lipsum->sentence(),
                 'description'       => $lipsum->paragraphs(5),
                 'meta_title'        => $lipsum->sentence(),
                 'meta_description'  => $lipsum->sentence(),
-                'tags'              => 'test'
+                'tags'              => 'test',
+                'slug'              => '/'
             ]
 
         ];
@@ -51,7 +53,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         }
 
         foreach ($rowsLang as $rowLang) {
-            $pagelang = $db->table('pages_langs')->where('page_id_page', $rowLang['page_id_page'])->get()->getRow();
+            $pagelang = $db->table('pages_langs')->where('id_page', $rowLang['id_page'])->get()->getRow();
 
             if (empty($pagelang)) {
                 // No setting - add the row

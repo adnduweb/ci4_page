@@ -18,10 +18,11 @@ class AdminPagesController extends AdminController
 
     use \App\Traits\BuilderTrait;
     use \App\Traits\ModuleTrait;
+
     /**
      *  * @var Module */
-    public $module = true;
-    public $name_module = 'blog';
+    public $module      = true;
+    public $name_module = 'pages';
     protected $idModule;
     public $controller = 'pages';
     public $item = 'page';
@@ -63,6 +64,9 @@ class AdminPagesController extends AdminController
         AssetsBO::add_js([$this->get_current_theme_view('plugins/custom/ckeditor/ckeditor-classic.bundle.js', 'default')]);
         AssetsBO::add_js([$this->get_current_theme_view('controllers/medias/js/manager.js', 'default')]);
         AssetsBO::add_js([$this->get_current_theme_view('js/builder.js', 'default')]);
+        if (class_exists('\Adnduweb\Ci4_blog\Controllers\Admin\AdminArticleController'))
+            AssetsBO::add_js([$this->get_current_theme_view('controllers/blog/js/builder.js', 'default')]);
+
         if (is_null($id)) {
             $this->data['form'] = new Page($this->request->getPost());
         } else {
@@ -93,30 +97,28 @@ class AdminPagesController extends AdminController
     {
         // validate
         $page = new PagesModel();
-        $rules = [
-            'slug' => 'required',
-        ];
-        if (!$this->validate($rules)) {
-            Tools::set_message('danger', $this->validator->getErrors(), lang('Core.warning_error'));
+        $this->validation->setRules(['lang.1.slug' => 'required']);
+        if (!$this->validation->run($this->request->getPost())) {
+            Tools::set_message('danger', $this->validation->getErrors(), lang('Core.warning_error'));
             return redirect()->back()->withInput();
         }
 
         // Try to create the user
         $pageBase = new Page($this->request->getPost());
+        $pageBase->active = isset($pageBase->active) ? 1 : 0;
         $this->lang = $this->request->getPost('lang');
-        $pageBase->slug = "/" . strtolower(preg_replace('/[^a-zA-Z0-9\-]/', '', preg_replace('/\s+/', '-', $pageBase->slug)));
 
         //On Créer un template si besoin
         if ($pageBase->template == 'code') {
-            $file =  $pageBase->id_page == '1' ? 'home' :  $pageBase->slug;
-            if($file == 'home'){
-                rename(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/home.php', APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/__home.php', );
+            $file =  $pageBase->id_page == '1' ? 'home' :  $pageBase->handle;
+            if ($file == 'home') {
+                rename(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/home.php', APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/__home.php',);
             }
-            if (!file_exists(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
-                write_file(APPPATH . 'Views/Front/Themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');
+            if (!file_exists(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
+                write_file(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');
             }
 
-            $pageBase->template = "default";
+            //$pageBase->template = "default";
         }
 
 
@@ -144,17 +146,16 @@ class AdminPagesController extends AdminController
     {
         // validate
         $page = new PagesModel();
-        $rules = [
-            'slug' => 'required',
-        ];
-        if (!$this->validate($rules)) {
-            Tools::set_message('danger', $this->validator->getErrors(), lang('Core.warning_error'));
+        $this->validation->setRules(['lang.1.slug' => 'required']);
+        if (!$this->validation->run($this->request->getPost())) {
+            Tools::set_message('danger', $this->validation->getErrors(), lang('Core.warning_error'));
             return redirect()->back()->withInput();
         }
 
         // Try to create the user
         $pageBase = new Page($this->request->getPost());
-        $pageBase->slug = "/" . strtolower(preg_replace('/[^a-zA-Z0-9\-]/', '', preg_replace('/\s+/', '-', $pageBase->slug)));
+        $pageBase->active = isset($pageBase->active) ? 1 : 0;
+        $pageBase->handle = uniforme(trim($this->request->getPost('lang[1][slug]')));
 
         if (!$page->save($pageBase)) {
             Tools::set_message('danger', $page->errors(), lang('Core.warning_error'));
@@ -164,6 +165,16 @@ class AdminPagesController extends AdminController
         $pageBaseId = $page->insertID();
         $this->lang = $this->request->getPost('lang');
         $pageBase->saveLang($this->lang, $pageBaseId);
+
+         //On Créer un template si besoin
+         if ($pageBase->template == 'code') {
+            $file =  $pageBase->handle;
+            if (!file_exists(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
+                write_file(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');
+            }
+
+            //$pageBase->template = "default";
+        }
 
         // Success!
         Tools::set_message('success', lang('Core.save_data'), lang('Core.cool_success'));
@@ -213,5 +224,20 @@ class AdminPagesController extends AdminController
             $this->deleteBuilder($value);
             return $this->respond(['status' => true, 'type' => 'success', 'message' => lang('Js.your_selected_records_have_been_deleted')], 200);
         }
+    }
+
+    public function ajaxProcessDelete()
+    {
+        if ($value = $this->request->getPost('value')) {
+            if (!empty($value['selected'])) {
+                $itsme = false;
+                foreach ($value['selected'] as $id) {
+
+                    $this->tableModel->delete($id);
+                }
+                return $this->respond(['status' => true, 'type' => 'success', 'message' => lang('Js.your_selected_records_have_been_deleted')], 200);
+            }
+        }
+        return $this->failUnauthorized(lang('Js.not_autorized'), 400);
     }
 }

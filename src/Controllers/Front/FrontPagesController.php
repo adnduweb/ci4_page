@@ -12,7 +12,8 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
     use \App\Traits\ModuleTrait;
 
     public $name_module = 'pages';
-    protected $idModule;
+    protected $slugModule;
+    protected $page;
 
     public function __construct()
     {
@@ -24,7 +25,7 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
     {
     }
 
-    public function show($id)
+    public function show($slug)
     {
         $loccale = 1;
         $setting_supportedLocales = unserialize(service('Settings')->setting_supportedLocales);
@@ -34,32 +35,34 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
                 $loccale = $v[0];
             }
         }
-        $this->data['page'] = $this->tableModel->where(['slug' => '/' . $id])->first();
-        if (empty($this->data['page'])) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException(lang('Core.Cannot find the page item : {0}', [$id]));
+        $this->page = $this->tableModel->getPageBySlug($slug);
+        if (empty($this->page)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException(lang('Core.Cannot find the page item : {0}', [$slug]));
         }
+        $this->data['page'] = new Page($this->page);
 
         $this->data['no_follow_no_index'] = ($this->data['page']->no_follow_no_index == 0) ?  'index follow' :  'no-index no-follow';
         $this->data['id']  = str_replace('/', '', $this->data['page']->slug);
         $this->data['class'] = $this->data['class'] . ' ' .  str_replace('/', '', $this->data['page']->slug) . ' ' .  str_replace('/', '', $this->data['page']->template);
         $this->data['meta_title'] = $this->data['page']->meta_title;
         $this->data['meta_description'] = $this->data['page']->meta_description;
-        $this->data['pageContent'] = $this->data['page'];
-        $this->data['pageContent']->builders = [];
-        if (!empty($this->getBuilderIdItem($this->data['page']->id_page, $this->idModule))) {
-            $this->data['form']->builders = $this->getBuilderIdItem($id, $this->idModule);
+        $builders = $this->getBuilderIdItem($this->data['page']->id_page, $this->idModule);
+        if (!empty($builders)) {
+            $this->data['page']->builders = $builders;
             $temp = [];
-            foreach ($this->data['pageContent']->builders as $builder) {
+            foreach ($this->data['page']->builders as $builder) {
                 $temp[$builder->order] = $builder;
             }
             ksort($temp);
-            $this->data['pageContent']->builders = $temp;
+            $this->data['page']->builders = $temp;
         }
 
+        // print_r($this->data['pageContent']); exit;
+
         if ($this->data['page']->template == 'code') {
-            return view($this->get_current_theme_view($this->data['page']->slug, 'default'), $this->data);
+            return view($this->get_current_theme_view($this->data['page']->handle, 'default'), $this->data);
         } else {
-            return view($this->get_current_theme_view('page', 'Adnduweb/ci4_page'), $this->data);
+            return view($this->get_current_theme_view('page', 'Adnduweb/Ci4_page'), $this->data);
         }
     }
 }

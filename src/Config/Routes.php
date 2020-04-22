@@ -27,11 +27,15 @@ $routes->group(CI_SITE_AREA, ['namespace' => '\Adnduweb\Ci4_page\Controllers\Adm
 });
 
 //ADN HACK;
-$routes->group('', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front'], function ($routes) {
+//$routes->group('', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front'], function ($routes) {
 
     $locale = '/';
 if (service('Settings')->setting_activer_multilangue == true) {
     $locale = '/{locale}';
 }
-    $routes->get($locale . '/(:segment)', 'FrontPagesController::show/$1');
-});
+    
+    // $routes->get($locale . '/actualites', 'FrontActualitesController::show/$1', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
+    // $routes->get($locale . '/categories', 'CategoriesController::index', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
+    // $routes->get($locale . '/article', 'ArticleController::index', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
+    $routes->get($locale . '/(:segment)', 'FrontPagesController::show/$1', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);
+//});

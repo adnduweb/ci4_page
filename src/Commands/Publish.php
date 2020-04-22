@@ -84,8 +84,8 @@ class Publish extends BaseCommand
     protected function publishCssJs()
     {
         if ($this->copydir(
-            $this->sourcePath . '/Assets/Admin/Themes/' . env('app.themeAdmin') . '/controllers/pages',
-            ROOTPATH . '/public/Admin/Themes/' . env('app.themeAdmin') . '/controllers/pages'
+            $this->sourcePath . '/Assets/admin/themes/' . env('app.themeAdmin') . '/controllers/pages',
+            ROOTPATH . '/public/admin/themes/' . env('app.themeAdmin') . '/controllers/pages'
         ) == true) {
             CLI::write('Les fichiers css et js du module ont été crées', 'green');
         }
