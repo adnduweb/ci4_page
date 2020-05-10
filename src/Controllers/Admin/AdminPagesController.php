@@ -66,6 +66,8 @@ class AdminPagesController extends AdminController
         AssetsBO::add_js([$this->get_current_theme_view('js/builder.js', 'default')]);
         if (class_exists('\Adnduweb\Ci4_blog\Controllers\Admin\AdminArticleController'))
             AssetsBO::add_js([$this->get_current_theme_view('controllers/blog/js/builder.js', 'default')]);
+        if (class_exists('\Adnduweb\Ci4_diaporama\Controllers\Admin\AdminDiaporamasController'))
+            AssetsBO::add_js([$this->get_current_theme_view('controllers/diaporamas/js/builder.js', 'default')]);
 
         if (is_null($id)) {
             $this->data['form'] = new Page($this->request->getPost());
@@ -166,8 +168,8 @@ class AdminPagesController extends AdminController
         $this->lang = $this->request->getPost('lang');
         $pageBase->saveLang($this->lang, $pageBaseId);
 
-         //On Créer un template si besoin
-         if ($pageBase->template == 'code') {
+        //On Créer un template si besoin
+        if ($pageBase->template == 'code') {
             $file =  $pageBase->handle;
             if (!file_exists(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
                 write_file(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');

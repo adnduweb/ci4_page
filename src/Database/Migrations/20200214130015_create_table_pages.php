@@ -49,6 +49,24 @@ class Migration_create_table_pages extends Migration
         $this->forge->addForeignKey('id_page', 'pages', 'id_page', false, 'CASCADE');
         $this->forge->createTable('pages_langs', true);
 
+
+        $fields = [
+            'id_404'             => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+            'source'             => ['type' => 'INT', 'constraint' => 11],
+            'url'                => ['type' => 'VARCHAR', 'constraint' => 255],
+            'http'               => ['type' => 'INT', 'constraint' => 11],
+            'created_at'         => ['type' => 'DATETIME', 'null' => true],
+            'updated_at'         => ['type' => 'DATETIME', 'null' => true],
+            'deleted_at'         => ['type' => 'DATETIME', 'null' => true],
+        ];
+
+        $this->forge->addField($fields);
+        $this->forge->addKey('id_404', true);
+        $this->forge->addKey('created_at');
+        $this->forge->addKey('updated_at');
+        $this->forge->addKey('deleted_at');
+        $this->forge->createTable('pages_404');
+
     }
 
     //--------------------------------------------------------------------
@@ -57,5 +75,6 @@ class Migration_create_table_pages extends Migration
     {
         $this->forge->dropTable('pages');
         $this->forge->dropTable('pages_langs');
+        $this->forge->dropTable('pages_404');
     }
 }
