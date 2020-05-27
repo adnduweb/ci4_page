@@ -27,23 +27,32 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
 
     public function show($slug)
     {
-        $loccale = 1;
+
+        $locale = 1;
         $setting_supportedLocales = unserialize(service('Settings')->setting_supportedLocales);
         foreach ($setting_supportedLocales as $setting_supportedLocale) {
             $v = explode('|', $setting_supportedLocale);
             if ($this->request->getLocale() == $v[1]) {
-                $loccale = $v[0];
+                $locale = $v[0];
             }
         }
-        $this->page = $this->tableModel->getPageBySlug($slug);
-        if (empty($this->page)) {
+
+        $pageLight = $this->tableModel->getIdPageBySlug($slug);
+        if (empty($pageLight)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException(lang('Core.Cannot find the page item : {0}', [$slug]));
         }
-        $this->data['page'] = new Page($this->page);
-
+        // check cache
+        if (env('cache.active') == true) {
+            if ($this->page = cache("front:pages:{$pageLight->id_page}")) {
+                $this->data['page'] = $this->page;
+            } else {
+                $this->data['page'] = $this->tableModel->where('id_page', $pageLight->id_page)->first();
+                $this->cache("front:pages:{$pageLight->id_page}", $this->data['page']);
+            }
+        }
         $this->data['no_follow_no_index'] = ($this->data['page']->no_follow_no_index == 0) ?  'index follow' :  'no-index no-follow';
         $this->data['id']  = str_replace('/', '', $this->data['page']->slug);
-        $this->data['class'] = $this->data['class'] . ' ' .  str_replace('/', '', $this->data['page']->slug) . ' ' .  str_replace('/', '', $this->data['page']->template);
+        $this->data['class'] = $this->data['class'] . ' ' .  str_replace('/', '', $this->data['page']->slug) . ' ' .  str_replace('/', '', $this->data['page']->template) . ' page_' . $this->data['page']->id_page;
         $this->data['meta_title'] = $this->data['page']->meta_title;
         $this->data['meta_description'] = $this->data['page']->meta_description;
         $builders = $this->getBuilderIdItem($this->data['page']->id_page, $this->idModule);
@@ -57,12 +66,10 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
             $this->data['page']->builders = $temp;
         }
 
-        // print_r($this->data['pageContent']); exit;
-
         if ($this->data['page']->template == 'code') {
             return view($this->get_current_theme_view($this->data['page']->handle, 'default'), $this->data);
         } else {
-            return view($this->get_current_theme_view('page', 'Adnduweb/Ci4_page'), $this->data);
+            return view($this->get_current_theme_view('__template_part/' . $this->data['page']->template, 'default'), $this->data);
         }
     }
 }

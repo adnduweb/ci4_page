@@ -68,6 +68,7 @@ class AdminPagesController extends AdminController
             AssetsBO::add_js([$this->get_current_theme_view('controllers/blog/js/builder.js', 'default')]);
         if (class_exists('\Adnduweb\Ci4_diaporama\Controllers\Admin\AdminDiaporamasController'))
             AssetsBO::add_js([$this->get_current_theme_view('controllers/diaporamas/js/builder.js', 'default')]);
+        AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->controller . '/js/outils.js', 'default')]);
 
         if (is_null($id)) {
             $this->data['form'] = new Page($this->request->getPost());
@@ -75,7 +76,7 @@ class AdminPagesController extends AdminController
             $this->data['form'] = $this->tableModel->where('id_page', $id)->first();
             if (empty($this->data['form'])) {
                 Tools::set_message('danger', lang('Core.not_{0}_exist', [$this->item]), lang('Core.warning_error'));
-                return redirect()->to('/' . env('CI_SITE_AREA') . '/' . user()->id_company . '/public/pages');
+                return redirect()->to('/' . env('CI_SITE_AREA') . '/public/pages');
             }
         }
         $this->data['form']->builders = [];
@@ -107,20 +108,24 @@ class AdminPagesController extends AdminController
 
         // Try to create the user
         $pageBase = new Page($this->request->getPost());
-        $pageBase->active = isset($pageBase->active) ? 1 : 0;
+        // print_r($_POST);
+        // print_r($pageBase);
+        // exit;
+
+        $pageBase->active = $this->request->getPost('active') ? 1 : 0;
         $this->lang = $this->request->getPost('lang');
 
         //On Créer un template si besoin
         if ($pageBase->template == 'code') {
             $file =  $pageBase->id_page == '1' ? 'home' :  $pageBase->handle;
             if ($file == 'home') {
-                rename(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/home.php', APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/__home.php',);
+                if (!file_exists(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
+                    rename(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/home.php', APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/__home.php',);
+                }
             }
             if (!file_exists(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
                 write_file(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php', '<!-- Votre code -->');
             }
-
-            //$pageBase->template = "default";
         }
 
 
@@ -136,11 +141,14 @@ class AdminPagesController extends AdminController
         // Success!
         Tools::set_message('success', lang('Core.save_data'), lang('Core.cool_success'));
         $redirectAfterForm = [
-            'url'                   => '/' . env('CI_SITE_AREA') . '/' . user()->id_company . '/public/pages',
+            'url'                   => '/' . env('CI_SITE_AREA') . '/public/pages',
             'action'                => 'edit',
             'submithandler'         => $this->request->getPost('submithandler'),
             'id'                    => $pageBase->id_page,
         ];
+
+        $this->videCache($pageBase->id_page);
+
         $this->redirectAfterForm($redirectAfterForm);
     }
 
@@ -156,7 +164,7 @@ class AdminPagesController extends AdminController
 
         // Try to create the user
         $pageBase = new Page($this->request->getPost());
-        $pageBase->active = isset($pageBase->active) ? 1 : 0;
+        $pageBase->active = $this->request->getPost('active') ? 1 : 0;
         $pageBase->handle = uniforme(trim($this->request->getPost('lang[1][slug]')));
 
         if (!$page->save($pageBase)) {
@@ -181,7 +189,7 @@ class AdminPagesController extends AdminController
         // Success!
         Tools::set_message('success', lang('Core.save_data'), lang('Core.cool_success'));
         $redirectAfterForm = [
-            'url'                   => '/' . env('CI_SITE_AREA') . '/' . user()->id_company . '/public/pages',
+            'url'                   => '/' . env('CI_SITE_AREA') . '/public/pages',
             'action'                => 'add',
             'submithandler'         => $this->request->getPost('submithandler'),
             'id'                    => $pageBaseId,
@@ -241,5 +249,22 @@ class AdminPagesController extends AdminController
             }
         }
         return $this->failUnauthorized(lang('Js.not_autorized'), 400);
+    }
+
+    public function ajaxProcessVideCache()
+    {
+        if ($value = $this->request->getPost('value')) {
+            $this->videCache($value['id_page']);
+            return $this->respond(['status' => true, 'type' => 'success', 'message' => lang('Core.cache_page_vide')], 200);
+        }
+        return $this->failUnauthorized(lang('Js.not_autorized'), 400);
+    }
+
+    protected function videCache(int $id_page)
+    {
+        foreach (glob(WRITEPATH . 'cache/pages:' . $id_page . '*') as $file) {
+            //echo $file; exit;
+            cache()->delete(str_replace(WRITEPATH . 'cache/', '', $file));
+        }
     }
 }

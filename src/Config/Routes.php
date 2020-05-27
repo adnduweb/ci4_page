@@ -19,23 +19,24 @@
 
 $routes->group(CI_SITE_AREA, ['namespace' => '\Adnduweb\Ci4_page\Controllers\Admin', 'filter' => 'apiauth'], function ($routes) {
 
-    $routes->get('(:num)/(:any)/pages', 'AdminPagesController::renderViewList', ['as' => 'page-index']);
-    $routes->get('(:num)/(:any)/pages/edit/(:any)', 'AdminPagesController::renderForm/$3');
-    $routes->post('(:num)/(:any)/pages/edit/(:any)', 'AdminPagesController::postProcess/$3');
-    $routes->get('(:num)/(:any)/pages/add', 'AdminPagesController::renderForm');
-    $routes->post('(:num)/(:any)/pages/add', 'AdminPagesController::postProcess');
+    $routes->get('(:any)/pages', 'AdminPagesController::renderViewList', ['as' => 'page-index']);
+    $routes->get('(:any)/pages/edit/(:any)', 'AdminPagesController::renderForm/$2');
+    $routes->post('(:any)/pages/edit/(:any)', 'AdminPagesController::postProcess/$2');
+    $routes->get('(:any)/pages/add', 'AdminPagesController::renderForm');
+    $routes->post('(:any)/pages/add', 'AdminPagesController::postProcess');
 });
 
 //ADN HACK;
 //$routes->group('', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front'], function ($routes) {
 
-    $locale = '/';
+$locale = '/';
 if (service('Settings')->setting_activer_multilangue == true) {
     $locale = '/{locale}';
 }
-    
-    // $routes->get($locale . '/actualites', 'FrontActualitesController::show/$1', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
-    // $routes->get($locale . '/categories', 'CategoriesController::index', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
-    // $routes->get($locale . '/article', 'ArticleController::index', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
-    $routes->get($locale . '/(:segment)', 'FrontPagesController::show/$1', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);
-//});
+//Blog
+$routes->get($locale . '/categories/(:segment)' . env('app.suffix_url'), 'FrontCategoriesController::Show/$1', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
+$routes->get($locale . '/actualites/(:segment)' . env('app.suffix_url'), 'FrontArticleController::Show/$1', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
+
+//Pages
+$routes->get($locale . '/(:segment)' . env('app.suffix_url'), 'FrontPagesController::show/$1', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);
+$routes->get($locale . '/(:segment)/(:segment)' . env('app.suffix_url'), 'FrontPagesController::show/$2', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);

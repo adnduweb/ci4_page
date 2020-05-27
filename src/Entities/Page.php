@@ -7,9 +7,24 @@ use CodeIgniter\Entity;
 class Page extends Entity
 {
     use \Tatter\Relations\Traits\EntityTrait;
+    use \App\Traits\BuilderEntityTrait;
     protected $table      = 'pages';
     protected $tableLang  = 'pages_langs';
     protected $primaryKey = 'id_page';
+
+    protected $attributes = [
+        'id_page'            => null,
+        'id_parent'          => null,
+        'template'           => null,
+        'active'             => null,
+        'no_follow_no_index' => null,
+        'handle'             => null,
+        'order'              => null,
+        'created_at'         => null,
+        'updated_at'         => null,
+        'deleted_at'         => null
+    ];
+
 
     protected $datamap = [];
     /**
@@ -29,24 +44,6 @@ class Page extends Entity
     public function getName()
     {
         return $this->attributes['name'] ?? null;
-    }
-    
-    public function getNameLang(int $id_lang)
-    {
-        foreach ($this->pages_langs as $lang) {
-            if ($id_lang == $lang->id_lang) {
-                return $lang->name ?? null;
-            }
-        }
-    }
-
-    public function getSousNameLang(int $id_lang)
-    {
-        foreach ($this->pages_langs as $lang) {
-            if ($id_lang == $lang->id_lang) {
-                return $lang->name_2 ?? null;
-            }
-        }
     }
 
     public function getDescription(int $id_lang)
@@ -76,84 +73,8 @@ class Page extends Entity
         }
     }
 
-    public function getBuilder(string $id_field, int $id_lang)
+    public function getLangsLink()
     {
-        foreach ($this->builders as $builder) {
-            if ($id_field == $builder->id_field) {
-                foreach ($builder->builders_langs as $lang) {
-                    if ($id_lang == $lang->id_lang) {
-                        $builder->id_lang = $lang->id_lang;
-                        $builder->content = $lang->content;
-                    }
-                }
-                unset($builder->builders_langs);
-                return $builder ?? null;
-            }
-            return false;
-        }
-    }
-
-    public function getBuilderContent(string $id_field, int $id_lang)
-    {
-        if (!empty($this->builders)) {
-            foreach ($this->builders as $builder) {
-                if ($id_field == $builder->id_field) {
-                    foreach ($builder->builders_langs as $lang) {
-                        if ($id_lang == $lang->id_lang) {
-                            return $lang->content ?? null;
-                        }
-                    }
-                }
-                return null;
-            }
-            return null;
-        }
-    }
-
-    public function getTextarea(string $handle, int $id_lang)
-    {
-        if (!empty($this->builders)) {
-            $i = 0;
-            foreach ($this->builders as $builder) {
-                if ($handle == $builder->handle && $builder->type == "textarea") {
-                    foreach ($builder->builders_langs as $lang) {
-                        if ($id_lang == $lang->id_lang) {
-                            return $lang->content ?? null;
-                        }
-                    }
-                }
-                $i++;
-            }
-            return null;
-        }
-    }
-    public function getTitle(string $handle, int $id_lang)
-    {
-        if (!empty($this->builders)) {
-            $i = 0;
-            foreach ($this->builders as $builder) {
-                if ($handle == $builder->handle && $builder->type == "textfield") {
-                    foreach ($builder->builders_langs as $lang) {
-                        if ($id_lang == $lang->id_lang) {
-                            return $lang->content ?? null;
-                        }
-                    }
-                }
-                $i++;
-            }
-            return null;
-        }
-    }
-
-    public function getLink($id_lang){
-        foreach ($this->pages_langs as $lang) {
-            if ($id_lang == $lang->id_lang) {
-                return $lang->slug ?? null;
-            }
-        }
-    }
-
-    public function getLangsLink(){
         $lang = [];
         if (!empty($this->id_page)) {
             foreach ($this->pages_langs as $tabs_lang) {
@@ -161,86 +82,6 @@ class Page extends Entity
             }
         }
         return $lang;
-    }
-
-    public function getBundleActu(string $handle, int $id_lang)
-    {
-        $listActu = new \stdClass();
-        $articles = [];
-        if (!empty($this->builders)) {
-            $i = 0;
-
-            foreach ($this->builders as $builder) {
-                if ($handle == $builder->handle && $builder->type == "actufield") {
-
-                    $getAttrOptions = $builder->getAttrOptions();
-                    if (empty($getAttrOptions))
-                        return $listActu->options = $getAttrOptions;
-
-                    $articlesModel = new \Adnduweb\Ci4_blog\Models\ArticlesModel();
-                    $categoriesModel = new \Adnduweb\Ci4_blog\Models\CategoriesModel();
-                    if ($getAttrOptions->cat == 'all') {
-                            $articles = $articlesModel->where('type', 1)->get()->getResult('array');
-                    } else {
-                        // $listActu = $categoriesModel->where('id_media', $getAttrOptions->media->id_media)->get()->getRow();
-                    }
-
-                 //   print_r($articles); exit;
-
-                    if (!empty($articles)) {
-                        $i = 0;
-                        foreach ($articles as $actu) {
-                            $listActu->articles[$i] = new \Adnduweb\Ci4_blog\Entities\Article($actu);
-                            $listActu->articles[$i]->categorie = $categoriesModel->find($actu['id_categorie_default']);
-                            $i++;
-                        }
-                    }
-
-
-                    if (is_object($listActu)) {
-                        $listActu->class = $builder->class . ' actu ';
-                        $listActu->id = $builder->id;
-                        $listActu->options = $getAttrOptions;
-                    }
-                }
-                $i++;
-            }
-        }
-
-        return $listActu;
-    }
-
-    public function getImage(string $handle, int $id_lang)
-    {
-        $image = null;
-        if (!empty($this->builders)) {
-            $i = 0;
-
-            foreach ($this->builders as $builder) {
-                if ($handle == $builder->handle && $builder->type == "imagefield") {
-
-                    $getAttrOptions = $builder->getAttrOptions();
-                    if (empty($getAttrOptions))
-                        return $image;
-
-                    $mediasModel = new \App\Models\mediasModel();
-                    $image = $mediasModel->getMediaById($getAttrOptions->media->id_media, $id_lang);
-                    if (empty($image)) {
-                        $image = $mediasModel->where('id_media', $getAttrOptions->media->id_media)->get()->getRow();
-                    }
-                    if (is_object($image)) {
-                        $image->class = $builder->class . ' adw_lazyload ';
-                        $image->id = $builder->id;
-                        $image->options = $getAttrOptions;
-                    }
-                }
-                $i++;
-            }
-        }
-
-        //print_r($image); exit;
-
-        return $image;
     }
 
 

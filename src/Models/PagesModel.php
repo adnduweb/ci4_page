@@ -19,14 +19,16 @@ class PagesModel extends Model
     protected $primaryKey         = 'id_page';
     protected $returnType         = Page::class;
     protected $useSoftDeletes     = true;
-    protected $allowedFields      = ['id_parent', 'template', 'active', 'no_follow_no_index', 'handle', 'order'];
+    protected $allowedFields      = [
+        'id_parent', 'template', 'active', 'no_follow_no_index', 'handle', 'order'
+    ];
     protected $useTimestamps      = true;
     protected $validationRules    = [];
     protected $validationMessages = [];
     protected $skipValidation     = false;
 
     public function __construct()
-    { 
+    {
         parent::__construct();
         $this->page = $this->db->table('pages');
         $this->page_lang = $this->db->table('pages_langs');
@@ -54,7 +56,7 @@ class PagesModel extends Model
         $this->page->select();
         $this->page->select('created_at as date_create_at');
         $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
-         if (isset($query[0]) && is_array($query)) {
+        if (isset($query[0]) && is_array($query)) {
             $this->page->where('deleted_at IS NULL AND (name LIKE "%' . $query[0] . '%" OR description_short LIKE "%' . $query[0] . '%") AND id_lang = ' . service('settings')->setting_id_lang);
             $this->page->limit(0, $page);
         } else {
@@ -76,7 +78,7 @@ class PagesModel extends Model
     {
         $this->page->select($this->table . '.' . $this->primaryKey);
         $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
-         if (isset($query[0]) && is_array($query)) {
+        if (isset($query[0]) && is_array($query)) {
             $this->page->where('deleted_at IS NULL AND (name LIKE "%' . $query[0] . '%" OR description_short LIKE "%' . $query[0] . '%") AND id_lang = ' . service('settings')->setting_id_lang);
         } else {
             $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang);
@@ -93,22 +95,51 @@ class PagesModel extends Model
     {
         $this->page->select();
         $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
-        $this->page->where('slug="' . $slug. '"');
+        $this->page->where('deleted_at IS NULL AND slug="' . $slug . '"');
         $page = $this->page->get()->getRowArray();
         if ($page['active'] == '1')
             return $page;
         return false;
     }
 
+    public function getIdPageBySlug($slug)
+    {
+        $this->page->select($this->table . '.' . $this->primaryKey . ', active');
+        $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
+        $this->page->where('deleted_at IS NULL AND  slug="' . $slug . '"');
+        $page = $this->page->get()->getRow();
+        if (!empty($page)) {
+            if ($page->active == '1')
+                return $page;
+        }
+        return false;
+    }
+
+    public function getPageBreadcrumbBySlug($slug)
+    {
+        $this->page->select('name');
+        $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
+        $this->page->where('deleted_at IS NULL AND active =1 AND slug="' . $slug . '"');
+        $page = $this->page->get()->getRow();
+        if (!empty($page)) {
+            return $page->name;
+        }
+        return false;
+    }
+
+
+
     public function getPageByIdInMenu($id, int $id_lang)
     {
-
         $this->page->select();
         $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
         $this->page->where([$this->table . '.id_page' => $id, 'id_lang' => $id_lang]);
         $page = $this->page->get()->getRow();
-        if ($page->active == '1')
-            return $page;
+        if (!empty($page)) {
+            if ($page->active == '1') {
+                return $page;
+            }
+        }
         return false;
     }
 }
