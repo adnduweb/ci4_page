@@ -45,6 +45,18 @@ class Page extends Entity
     {
         return $this->attributes['name'] ?? null;
     }
+    public function getType()
+    {
+        return $this->table;
+    }
+    public function getSlug($id_lang = null)
+    {
+        foreach ($this->pages_langs as $lang) {
+            if ($id_lang == $lang->id_lang) {
+                return $lang->slug;
+            }
+        }
+    }
 
     public function getDescription(int $id_lang)
     {
@@ -71,17 +83,6 @@ class Page extends Entity
                 return $lang->meta_title ?? null;
             }
         }
-    }
-
-    public function getLangsLink()
-    {
-        $lang = [];
-        if (!empty($this->id_page)) {
-            foreach ($this->pages_langs as $tabs_lang) {
-                $lang[$tabs_lang->id_lang] = $tabs_lang;
-            }
-        }
-        return $lang;
     }
 
 

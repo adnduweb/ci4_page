@@ -79,6 +79,7 @@ class AdminPagesController extends AdminController
                 return redirect()->to('/' . env('CI_SITE_AREA') . '/public/pages');
             }
         }
+        $this->data['form']->allPages = $this->tableModel->getAllPageOptionParent();
         $this->data['form']->builders = [];
         $this->data['form']->id_module = $this->idModule;
         $this->data['form']->id_item = $id;
@@ -91,7 +92,8 @@ class AdminPagesController extends AdminController
             ksort($temp);
             $this->data['form']->builders = $temp;
         }
-        //print_r($this->data['form']->builders); exit;
+        // print_r($this->data['form']->allPages);
+        // exit;
         parent::renderForm($id);
         return view($this->get_current_theme_view('form', 'Adnduweb/Ci4_page'), $this->data);
     }

@@ -10,12 +10,12 @@ class Migration_create_table_pages extends Migration
     {
         $fields = [
             'id_page'            => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
-            'id_parent'          => ['type' => 'INT', 'constraint' => 11],
+            'id_parent'          => ['type' => 'INT', 'constraint' => 11, 'default' => 0],
             'template'           => ['type' => 'VARCHAR', 'constraint' => 255],
             'active'             => ['type' => 'INT', 'constraint' => 11],
-            'no_follow_no_index' => ['type' => 'INT', 'constraint' => 11],
+            'no_follow_no_index' => ['type' => 'INT', 'constraint' => 11, 'null' => true],
             'handle'             => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
-            'order'              => ['type' => 'INT', 'constraint' => 11],
+            'order'              => ['type' => 'INT', 'constraint' => 11, 'null' => true],
             'created_at'         => ['type' => 'DATETIME', 'null' => true],
             'updated_at'         => ['type' => 'DATETIME', 'null' => true],
             'deleted_at'         => ['type' => 'DATETIME', 'null' => true],
@@ -66,7 +66,6 @@ class Migration_create_table_pages extends Migration
         $this->forge->addKey('updated_at');
         $this->forge->addKey('deleted_at');
         $this->forge->createTable('pages_404');
-
     }
 
     //--------------------------------------------------------------------

@@ -34,6 +34,19 @@ class PagesModel extends Model
         $this->page_lang = $this->db->table('pages_langs');
     }
 
+    public function getAllPageOptionParent()
+    {
+        $instance = [];
+        $this->page->select($this->table . '.id_page, slug, name, id_parent, created_at');
+        $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
+        $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang_bo);
+        $this->page->orderBy($this->table . '.id_page DESC');
+        $pages = $this->page->get()->getResult();
+        //echo $this->page->getCompiledSelect(); exit;
+        return $pages;
+    }
+
+
     public function getListByMenu()
     {
         $instance = [];
@@ -141,5 +154,14 @@ class PagesModel extends Model
             }
         }
         return false;
+    }
+
+    public function getLink(int $id_page, int $id_lang)
+    {
+        $this->page->select('slug, id_parent');
+        $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
+        $this->page->where([$this->table . '.id_page' => $id_page, 'id_lang' => $id_lang]);
+        $page = $this->page->get()->getRow();
+        return $page;
     }
 }

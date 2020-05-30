@@ -40,3 +40,4 @@ $routes->get($locale . '/actualites/(:segment)' . env('app.suffix_url'), 'FrontA
 //Pages
 $routes->get($locale . '/(:segment)' . env('app.suffix_url'), 'FrontPagesController::show/$1', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);
 $routes->get($locale . '/(:segment)/(:segment)' . env('app.suffix_url'), 'FrontPagesController::show/$2', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);
+$routes->get($locale . '/(:segment)/(:segment)/(:segment)' . env('app.suffix_url'), 'FrontPagesController::show/$3', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);

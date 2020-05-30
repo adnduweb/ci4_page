@@ -41,15 +41,8 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
         if (empty($pageLight)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException(lang('Core.Cannot find the page item : {0}', [$slug]));
         }
-        // check cache
-        if (env('cache.active') == true) {
-            if ($this->page = cache("front:pages:{$pageLight->id_page}")) {
-                $this->data['page'] = $this->page;
-            } else {
-                $this->data['page'] = $this->tableModel->where('id_page', $pageLight->id_page)->first();
-                $this->cache("front:pages:{$pageLight->id_page}", $this->data['page']);
-            }
-        }
+        $this->data['page'] = $this->tableModel->where('id_page', $pageLight->id_page)->first();
+
         $this->data['no_follow_no_index'] = ($this->data['page']->no_follow_no_index == 0) ?  'index follow' :  'no-index no-follow';
         $this->data['id']  = str_replace('/', '', $this->data['page']->slug);
         $this->data['class'] = $this->data['class'] . ' ' .  str_replace('/', '', $this->data['page']->slug) . ' ' .  str_replace('/', '', $this->data['page']->template) . ' page_' . $this->data['page']->id_page;

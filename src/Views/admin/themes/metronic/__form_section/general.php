@@ -43,6 +43,15 @@
     </div>
 </div>
 
+<div class="form-group form-group-sm row">
+    <label for="id_parent" class="col-xl-3 col-lg-3 col-form-label"><?= ucfirst(lang('Core.parent')); ?></label>
+    <div class="col-lg-9 col-xl-6">
+        <select name="id_parent" class="form-control selectpicker file kt-selectpicker" data-actions-box="true" title="<?= ucfirst(lang('Core.choose_one_of_the_following')); ?>" id="template">
+            <?= generate_menuOption(0, 0, $form->allPages, $form->id_parent); ?>
+        </select>
+    </div>
+</div>
+
 
 <div class="form-group row kt-shape-bg-color-1">
     <label for="name" class="col-xl-3 col-lg-3 col-form-label"><?= ucfirst(lang('Core.name')); ?>* : </label>
@@ -62,7 +71,7 @@
     <label for="sous_name" class="col-xl-3 col-lg-3 col-form-label"><?= ucfirst(lang('Core.slug')); ?>* : </label>
     <div class="col-lg-9 col-xl-6">
         <?= form_input_spread('slug', $form->_prepareLang(), 'id="slug" class="form-control lang"', 'text', true); ?>
-        <span class="form-text text-muted"><?= lang('Core.Voir la page :'); ?> <a target="_blank" href="<?= base_urlFront($form->getLink(1)); ?>"><?= base_urlFront($form->getLink(1)); ?></a></span>
+        <span class="form-text text-muted"><?= lang('Core.Voir la page :'); ?> <a target="_blank" href="<?= getLinkPage($form, service('settings')->setting_id_lang_bo); ?>"><?= base_urlFront(getLinkPage($form, service('settings')->setting_id_lang_bo)); ?></a></span>
     </div>
 </div>
 
