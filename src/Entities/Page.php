@@ -45,7 +45,7 @@ class Page extends Entity
     {
         return $this->attributes['name'] ?? null;
     }
-    public function getType()
+    public function getClassEntities()
     {
         return $this->table;
     }
