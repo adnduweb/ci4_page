@@ -15,7 +15,37 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
             [
                 'id_page'            => 1,
                 'id_parent'          => 0,
-                'template'           => 'default',
+                'template'           => 'page_default',
+                'active'             => 1,
+                'no_follow_no_index' => 0,
+                'handle'             => null,
+                'order'              => 1,
+                'created_at'         => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id_page'            => 2,
+                'id_parent'          => 0,
+                'template'           => 'page_default',
+                'active'             => 1,
+                'no_follow_no_index' => 0,
+                'handle'             => null,
+                'order'              => 1,
+                'created_at'         => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id_page'            => 3,
+                'id_parent'          => 0,
+                'template'           => 'page_default',
+                'active'             => 1,
+                'no_follow_no_index' => 0,
+                'handle'             => null,
+                'order'              => 1,
+                'created_at'         => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id_page'            => 4,
+                'id_parent'          => 0,
+                'template'           => 'page_contact',
                 'active'             => 1,
                 'no_follow_no_index' => 0,
                 'handle'             => null,
@@ -26,7 +56,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         ];
         $rowsLang = [
             [
-                'id_page'      => 1,
+                'id_page'           => 1,
                 'id_lang'           => 1,
                 'name'              => 'Welcome to CodeIgniter',
                 'name_2'            => 'The small framework with powerful features',
@@ -36,6 +66,42 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'meta_description'  => $lipsum->sentence(),
                 'tags'              => 'test',
                 'slug'              => '/'
+            ],
+            [
+                'id_page'           => 2,
+                'id_lang'           => 1,
+                'name'              => 'Mentions légales',
+                'name_2'            => $lipsum->words(5),
+                'description_short' => $lipsum->sentence(),
+                'description'       => $lipsum->paragraphs(5),
+                'meta_title'        => $lipsum->sentence(),
+                'meta_description'  => $lipsum->sentence(),
+                'tags'              => 'test',
+                'slug'              => 'mentions-legales'
+            ],
+            [
+                'id_page'           => 3,
+                'id_lang'           => 1,
+                'name'              => 'Politique de confidentialité',
+                'name_2'            => $lipsum->words(5),
+                'description_short' => $lipsum->sentence(),
+                'description'       => $lipsum->paragraphs(5),
+                'meta_title'        => $lipsum->sentence(),
+                'meta_description'  => $lipsum->sentence(),
+                'tags'              => 'test',
+                'slug'              => 'poltiique-de-confidentialite'
+            ],
+            [
+                'id_page'           => 4,
+                'id_lang'           => 1,
+                'name'              => 'Contactez-nous',
+                'name_2'            => $lipsum->words(5),
+                'description_short' => $lipsum->sentence(),
+                'description'       => $lipsum->paragraphs(5),
+                'meta_title'        => $lipsum->sentence(),
+                'meta_description'  => $lipsum->sentence(),
+                'tags'              => 'test',
+                'slug'              => 'poltiique-de-confidentialite'
             ]
 
         ];

@@ -33,9 +33,21 @@ $locale = '/';
 if (service('Settings')->setting_activer_multilangue == true) {
     $locale = '/{locale}';
 }
+
 //Blog
 $routes->get($locale . '/categories/(:segment)' . env('app.suffix_url'), 'FrontCategoriesController::Show/$1', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
-$routes->get($locale . '/actualites/(:segment)' . env('app.suffix_url'), 'FrontArticleController::Show/$1', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
+$routes->get($locale . '/post/(:segment)' . env('app.suffix_url'), 'FrontArticleController::Show/$1', ['namespace' => '\Adnduweb\Ci4_blog\Controllers\Front']);
+
+//E-commerce
+$routes->get($locale . '/logout', 'FrontAuthenticationController::logout', ['namespace' => '\Adnduweb\Ci4_ecommerce\Controllers\Front', 'as' => 'logout-customer']);
+$routes->get($locale . '/signin', 'FrontAuthenticationController::SignIn', ['namespace' => '\Adnduweb\Ci4_ecommerce\Controllers\Front', 'as' => 'signin']);
+$routes->post($locale . '/signin', 'FrontAuthenticationController::postProcessSignIn', ['namespace' => '\Adnduweb\Ci4_ecommerce\Controllers\Front']);
+$routes->get($locale . '/signup', 'FrontAuthenticationController::SignUp', ['namespace' => '\Adnduweb\Ci4_ecommerce\Controllers\Front']);
+$routes->post($locale . '/signup', 'FrontAuthenticationController::postProcessSignUp', ['namespace' => '\Adnduweb\Ci4_ecommerce\Controllers\Front']);
+$routes->get($locale . '/activate-account-customer', 'FrontAuthenticationController::ActivateAccount', ['namespace' => '\Adnduweb\Ci4_ecommerce\Controllers\Front']);
+$routes->get($locale . '/my-account', 'FrontAccountController::index', ['namespace' => '\Adnduweb\Ci4_ecommerce\Controllers\Front', 'filter' => 'loginCustomer']);
+
+
 
 //Pages
 $routes->get($locale . '/(:segment)' . env('app.suffix_url'), 'FrontPagesController::show/$1', ['namespace' => '\Adnduweb\Ci4_page\Controllers\Front']);

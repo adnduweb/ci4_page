@@ -39,11 +39,16 @@ class PagesModel extends Model
         $instance = [];
         $this->page->select($this->table . '.id_page, slug, name, id_parent, created_at');
         $this->page->join($this->tableLang, $this->table . '.' . $this->primaryKey . ' = ' . $this->tableLang . '.id_page');
-        $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_id_lang_bo);
+        $this->page->where('deleted_at IS NULL AND id_lang = ' . service('settings')->setting_bo_id_lang);
         $this->page->orderBy($this->table . '.id_page DESC');
         $pages = $this->page->get()->getResult();
         //echo $this->page->getCompiledSelect(); exit;
-        return $pages;
+        if (!empty($pages)) {
+            foreach ($pages as $page) {
+                $instance[] = new Page((array) $page);
+            }
+        }
+        return $instance;
     }
 
 

@@ -108,11 +108,20 @@ class AdminPagesController extends AdminController
             return redirect()->back()->withInput();
         }
 
+        // Pas de parente de la page  d'accueil
+        if ($this->request->getPost('id_parent') == '1') {
+            Tools::set_message('danger', lang('Core.not_parent_id'), lang('Core.warning_error'));
+            return redirect()->back()->withInput();
+        }
+
+        // Si le parent est la page elle meme
+        if ($this->request->getPost('id_parent') == $this->request->getPost('id_page')) {
+            Tools::set_message('danger', lang('Core.not_parent_id_page'), lang('Core.warning_error'));
+            return redirect()->back()->withInput();
+        }
+
         // Try to create the user
         $pageBase = new Page($this->request->getPost());
-        // print_r($_POST);
-        // print_r($pageBase);
-        // exit;
 
         $pageBase->active = $this->request->getPost('active') ? 1 : 0;
         $this->lang = $this->request->getPost('lang');
@@ -241,6 +250,7 @@ class AdminPagesController extends AdminController
     public function ajaxProcessDelete()
     {
         if ($value = $this->request->getPost('value')) {
+
             if (!empty($value['selected'])) {
                 $itsme = false;
                 foreach ($value['selected'] as $id) {

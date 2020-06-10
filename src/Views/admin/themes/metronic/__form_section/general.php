@@ -38,7 +38,10 @@
             <option <?= $form->template  == "page_full_width_diapo" ? 'selected' : ''; ?> value="page_full_width_diapo"><?= lang('Core.page full width + diapo'); ?></option>
             <option <?= $form->template  == "page_boxed" ? 'selected' : ''; ?> value="page_boxed"><?= lang('Core.page boxed'); ?></option>
             <option <?= $form->template  == "page_boxed_diapo" ? 'selected' : ''; ?> value="page_boxed_diapo"><?= lang('Core.page boxed + diapo'); ?></option>
+            <option <?= $form->template  == "page_actu_boxed" ? 'selected' : ''; ?> value="page_actu_boxed"><?= lang('Core.page actualite'); ?></option>
+            <option <?= $form->template  == "page_contact" ? 'selected' : ''; ?> value="page_contact"><?= lang('Core.page contact'); ?></option>
             <option <?= $form->template  == "code" ? 'selected' : ''; ?> value="code"><?= lang('Core.page personnalisée'); ?></option>
+            page_contact
         </select>
     </div>
 </div>
@@ -71,7 +74,7 @@
     <label for="sous_name" class="col-xl-3 col-lg-3 col-form-label"><?= ucfirst(lang('Core.slug')); ?>* : </label>
     <div class="col-lg-9 col-xl-6">
         <?= form_input_spread('slug', $form->_prepareLang(), 'id="slug" class="form-control lang"', 'text', true); ?>
-        <span class="form-text text-muted"><?= lang('Core.Voir la page :'); ?> <a target="_blank" href="<?= getLinkPage($form, service('settings')->setting_id_lang_bo); ?>"><?= base_urlFront(getLinkPage($form, service('settings')->setting_id_lang_bo)); ?></a></span>
+        <span class="form-text text-muted"><?= lang('Core.Voir la page :'); ?> <a target="_blank" href="<?= base_urlFront(getLinkPage($form, service('settings')->setting_bo_id_lang)); ?>"><?= base_urlFront(getLinkPage($form, service('settings')->setting_bo_id_lang)); ?></a></span>
     </div>
 </div>
 
