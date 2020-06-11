@@ -4,6 +4,7 @@ namespace Adnduweb\Ci4_page\Models;
 
 use CodeIgniter\Model;
 use Adnduweb\Ci4_page\Entities\Page;
+use Faker\Generator;
 
 class PagesModel extends Model
 {
@@ -32,6 +33,27 @@ class PagesModel extends Model
         parent::__construct();
         $this->page = $this->db->table('pages');
         $this->page_lang = $this->db->table('pages_langs');
+    }
+
+    public function fake(Generator &$faker)
+    {
+        // return [
+        //     'first'  => $faker->firstName,
+        //     'email'  => $faker->email,
+        //     'phone'  => $faker->phoneNumber,
+        //     'avatar' => '',
+        //     'login'  => config('Auth')->allowRemembering ? date('Y-m-d') : null,
+        // ];
+
+        return [
+            'id_parent' => 0,
+            'template' => $faker->firstName,
+            'active' => 1,
+            'no_follow_no_index' => 0,
+            'handle' => $faker->words(1),
+            'order' => 1,
+            'created_at' => date('Y-m-d H:i:s'),
+        ];
     }
 
     public function getAllPageOptionParent()

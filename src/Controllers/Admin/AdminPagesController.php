@@ -10,6 +10,7 @@ use App\Libraries\AssetsBO;
 use App\Libraries\Tools;
 use Adnduweb\Ci4_page\Entities\Page;
 use Adnduweb\Ci4_page\Models\PagesModel;
+use \CodeIgniter\Test\Fabricator;
 
 
 
@@ -18,6 +19,7 @@ class AdminPagesController extends AdminController
 
     use \App\Traits\BuilderTrait;
     use \App\Traits\ModuleTrait;
+
 
     /**
      *  * @var Module */
@@ -31,6 +33,7 @@ class AdminPagesController extends AdminController
     public $fieldList = 'name';
     public $add = true;
     public $multilangue = true;
+    public $pagesRestrict = ['1', '2', '3', '4'];
 
 
     public function __construct()
@@ -44,7 +47,6 @@ class AdminPagesController extends AdminController
 
     public function renderViewList()
     {
-        //print_r(Service('currency')->Taxe());exit;
         AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->controller . '/js/list.js', 'default')]);
         $parent =  parent::renderViewList();
         if (is_object($parent) && $parent->getStatusCode() == 307) {
@@ -254,6 +256,10 @@ class AdminPagesController extends AdminController
             if (!empty($value['selected'])) {
                 $itsme = false;
                 foreach ($value['selected'] as $id) {
+                    if (in_array($id, $this->pagesRestrict)) {
+                        return $this->respond(['status' => false, 'type' => 'warning', 'message' => lang('Js.not_delete_page_default')], 200);
+                        break;
+                    }
 
                     $this->tableModel->delete($id);
                 }
