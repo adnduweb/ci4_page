@@ -8,8 +8,8 @@ class Page extends Entity
 {
     use \Tatter\Relations\Traits\EntityTrait;
     use \App\Traits\BuilderEntityTrait;
-    protected $table      = 'pages';
-    protected $tableLang  = 'pages_langs';
+    protected $table      = 'page';
+    protected $tableLang  = 'page_lang';
     protected $primaryKey = 'id_page';
 
     protected $attributes = [
@@ -43,43 +43,63 @@ class Page extends Entity
     }
     public function getName()
     {
-        return $this->attributes['name'] ?? null;
+        if (isset($this->page_lang)) {
+            foreach ($this->page_lang as $lang) {
+                if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+                    return $lang->name;
+                }
+            }
+        } else {
+            return $this->attributes['name'] ?? null;
+        }
     }
     public function getClassEntities()
     {
         return $this->table;
     }
-    public function getSlug($id_lang = null)
+    public function getSlug()
     {
-        foreach ($this->pages_langs as $lang) {
-            if ($id_lang == $lang->id_lang) {
-                return $lang->slug;
+        if (isset($this->page_lang)) {
+            foreach ($this->page_lang as $lang) {
+                if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+                    return $lang->slug;
+                }
             }
+        } else {
+            return $this->attributes['slug'] ?? null;
         }
     }
-
-    public function getDescription(int $id_lang)
+    public function getDescription()
     {
-        foreach ($this->pages_langs as $lang) {
-            if ($id_lang == $lang->id_lang) {
+        foreach ($this->page_lang as $lang) {
+            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
                 return $lang->description ?? null;
             }
         }
     }
 
-    public function get_MetaDescription(int $id_lang)
+    public function getDescriptionShort()
     {
-        foreach ($this->pages_langs as $lang) {
-            if ($id_lang == $lang->id_lang) {
+        foreach ($this->page_lang as $lang) {
+            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+                return $lang->description_short ?? null;
+            }
+        }
+    }
+
+    public function get_MetaDescription()
+    {
+        foreach ($this->page_lang as $lang) {
+            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
                 return $lang->meta_description ?? null;
             }
         }
     }
 
-    public function get_MetaTitle(int $id_lang)
+    public function get_MetaTitle()
     {
-        foreach ($this->pages_langs as $lang) {
-            if ($id_lang == $lang->id_lang) {
+        foreach ($this->page_lang as $lang) {
+            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
                 return $lang->meta_title ?? null;
             }
         }
@@ -90,11 +110,16 @@ class Page extends Entity
     {
         $name = [];
         $i = 0;
-        foreach ($this->pages_langs as $lang) {
-            $name[$lang->id_lang]['name'] = $lang->name;
-            $i++;
+        if (isset($this->page_lang)) {
+            foreach ($this->page_lang as $lang) {
+                $name[$lang->id_lang]['name'] = $lang->name;
+                $i++;
+            }
+            return $name ?? null;
+        } else {
+            $name[service('switchlanguage')->getIdLocale()]['name'] =  $this->attributes['name'];
+            return $name ?? null;
         }
-        return $name ?? null;
     }
 
 
@@ -102,7 +127,7 @@ class Page extends Entity
     {
         $lang = [];
         if (!empty($this->id_page)) {
-            foreach ($this->pages_langs as $tabs_lang) {
+            foreach ($this->page_lang as $tabs_lang) {
                 $lang[$tabs_lang->id_lang] = $tabs_lang;
             }
         }

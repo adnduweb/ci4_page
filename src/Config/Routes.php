@@ -8,10 +8,3 @@ $routes->group(CI_SITE_AREA, ['namespace' => '\Adnduweb\Ci4_page\Controllers\Adm
     $routes->get('(:any)/pages/add', 'AdminPagesController::renderForm');
     $routes->post('(:any)/pages/add', 'AdminPagesController::postProcess');
 });
-
-$locale = '/';
-if (service('Settings')->setting_activer_multilangue == true) {
-    $locale = '/{locale}';
-}
-//HOME
-$routes->get($locale . '/', '\App\Controllers\Front\HomeFrontController::index');

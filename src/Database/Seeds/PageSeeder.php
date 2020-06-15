@@ -94,14 +94,14 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
             [
                 'id_page'           => 4,
                 'id_lang'           => 1,
-                'name'              => 'Contactez-nous',
+                'name'              => 'Contactez nous',
                 'name_2'            => $lipsum->words(5),
                 'description_short' => $lipsum->sentence(),
                 'description'       => $lipsum->paragraphs(5),
                 'meta_title'        => $lipsum->sentence(),
                 'meta_description'  => $lipsum->sentence(),
                 'tags'              => 'test',
-                'slug'              => 'poltiique-de-confidentialite'
+                'slug'              => 'Contactez-nous'
             ]
 
         ];
@@ -110,20 +110,20 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         //$pages = new PagesModel();
         $db = \Config\Database::connect();
         foreach ($rows as $row) {
-            $page = $db->table('pages')->where('id_page', $row['id_page'])->get()->getRow();
+            $page = $db->table('page')->where('id_page', $row['id_page'])->get()->getRow();
             //print_r($page); exit;
             if (empty($page)) {
                 // No setting - add the row
-                $db->table('pages')->insert($row);
+                $db->table('page')->insert($row);
             }
         }
 
         foreach ($rowsLang as $rowLang) {
-            $pagelang = $db->table('pages_langs')->where('id_page', $rowLang['id_page'])->get()->getRow();
+            $pagelang = $db->table('page_lang')->where('id_page', $rowLang['id_page'])->get()->getRow();
 
             if (empty($pagelang)) {
                 // No setting - add the row
-                $db->table('pages_langs')->insert($rowLang);
+                $db->table('page_lang')->insert($rowLang);
             }
         }
 

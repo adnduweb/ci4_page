@@ -4,7 +4,7 @@ namespace Adnduweb\Ci4_page\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Migration_create_table_pages extends Migration
+class Migration_create_table_page extends Migration
 {
     public function up()
     {
@@ -26,7 +26,7 @@ class Migration_create_table_pages extends Migration
         $this->forge->addKey('created_at');
         $this->forge->addKey('updated_at');
         $this->forge->addKey('deleted_at');
-        $this->forge->createTable('pages');
+        $this->forge->createTable('page');
 
 
         $fields = [
@@ -46,8 +46,8 @@ class Migration_create_table_pages extends Migration
         // $this->forge->addKey(['id_item', 'id_lang'], false, true);
         $this->forge->addKey('id_item');
         $this->forge->addKey('id_lang');
-        $this->forge->addForeignKey('id_page', 'pages', 'id_page', false, 'CASCADE');
-        $this->forge->createTable('pages_langs', true);
+        $this->forge->addForeignKey('id_page', 'page', 'id_page', false, 'CASCADE');
+        $this->forge->createTable('page_lang', true);
 
 
         $fields = [
@@ -65,15 +65,15 @@ class Migration_create_table_pages extends Migration
         $this->forge->addKey('created_at');
         $this->forge->addKey('updated_at');
         $this->forge->addKey('deleted_at');
-        $this->forge->createTable('pages_404');
+        $this->forge->createTable('page_404');
     }
 
     //--------------------------------------------------------------------
 
     public function down()
     {
-        $this->forge->dropTable('pages');
-        $this->forge->dropTable('pages_langs');
-        $this->forge->dropTable('pages_404');
+        $this->forge->dropTable('page');
+        $this->forge->dropTable('page_lang');
+        $this->forge->dropTable('page_404');
     }
 }

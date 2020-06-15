@@ -41,7 +41,7 @@ class PageDefault
         return $this->title;
     }
 
-    public function getLangsLink()
+    public function getStwichLangSlug()
     {
         $lang = [];
         foreach ($this->url as $k => $v) {

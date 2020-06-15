@@ -10,9 +10,6 @@ use App\Libraries\AssetsBO;
 use App\Libraries\Tools;
 use Adnduweb\Ci4_page\Entities\Page;
 use Adnduweb\Ci4_page\Models\PagesModel;
-use \CodeIgniter\Test\Fabricator;
-
-
 
 class AdminPagesController extends AdminController
 {
