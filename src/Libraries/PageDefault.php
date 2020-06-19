@@ -26,12 +26,12 @@ class PageDefault
         $this->url = $page['url'];
     }
 
-    public function get_MetaTitle()
+    public function getBMetaTitle()
     {
         return $this->meta_title;
     }
 
-    public function get_MetaDescription()
+    public function getBMetaDescription()
     {
         return $this->meta_description;
     }

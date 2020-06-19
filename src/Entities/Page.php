@@ -8,12 +8,13 @@ class Page extends Entity
 {
     use \Tatter\Relations\Traits\EntityTrait;
     use \App\Traits\BuilderEntityTrait;
-    protected $table      = 'page';
-    protected $tableLang  = 'page_lang';
-    protected $primaryKey = 'id_page';
+    protected $table          = 'pages';
+    protected $tableLang      = 'pages_langs';
+    protected $primaryKey     = 'id';
+    protected $primaryKeyLang = 'page_id';
 
     protected $attributes = [
-        'id_page'            => null,
+        'id'            => null,
         'id_parent'          => null,
         'template'           => null,
         'active'             => null,
@@ -37,30 +38,15 @@ class Page extends Entity
      */
     protected $casts = [];
 
-    public function getId()
+    public function getIdPage()
     {
-        return $this->id_page ?? null;
+        return $this->attributes['id'] ?? null;
     }
-    public function getName()
-    {
-        if (isset($this->page_lang)) {
-            foreach ($this->page_lang as $lang) {
-                if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
-                    return $lang->name;
-                }
-            }
-        } else {
-            return $this->attributes['name'] ?? null;
-        }
-    }
-    public function getClassEntities()
-    {
-        return $this->table;
-    }
+
     public function getSlug()
     {
-        if (isset($this->page_lang)) {
-            foreach ($this->page_lang as $lang) {
+        if (isset($this->pages_langs)) {
+            foreach ($this->pages_langs as $lang) {
                 if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
                     return $lang->slug;
                 }
@@ -69,49 +55,13 @@ class Page extends Entity
             return $this->attributes['slug'] ?? null;
         }
     }
-    public function getDescription()
-    {
-        foreach ($this->page_lang as $lang) {
-            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
-                return $lang->description ?? null;
-            }
-        }
-    }
-
-    public function getDescriptionShort()
-    {
-        foreach ($this->page_lang as $lang) {
-            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
-                return $lang->description_short ?? null;
-            }
-        }
-    }
-
-    public function get_MetaDescription()
-    {
-        foreach ($this->page_lang as $lang) {
-            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
-                return $lang->meta_description ?? null;
-            }
-        }
-    }
-
-    public function get_MetaTitle()
-    {
-        foreach ($this->page_lang as $lang) {
-            if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
-                return $lang->meta_title ?? null;
-            }
-        }
-    }
-
 
     public function getNameAllLang()
     {
         $name = [];
         $i = 0;
-        if (isset($this->page_lang)) {
-            foreach ($this->page_lang as $lang) {
+        if (isset($this->pages_langs)) {
+            foreach ($this->pages_langs as $lang) {
                 $name[$lang->id_lang]['name'] = $lang->name;
                 $i++;
             }
@@ -126,9 +76,9 @@ class Page extends Entity
     public function _prepareLang()
     {
         $lang = [];
-        if (!empty($this->id_page)) {
-            foreach ($this->page_lang as $tabs_lang) {
-                $lang[$tabs_lang->id_lang] = $tabs_lang;
+        if (!empty($this->id)) {
+            foreach ($this->pages_langs as $tabs_langs) {
+                $lang[$tabs_langs->id_lang] = $tabs_langs;
             }
         }
         return $lang;
@@ -140,39 +90,92 @@ class Page extends Entity
         $db      = \Config\Database::connect();
         $builder = $db->table($this->tableLang);
         foreach ($data as $k => $v) {
-            $this->tableLang =  $builder->where(['id_lang' => $k, 'id_page' => $key])->get()->getRow();
+            $this->tableLang =  $builder->where(['id_lang' => $k, $this->primaryKeyLang => $key])->get()->getRow();
             // print_r($this->tableLang);
             if (empty($this->tableLang)) {
                 $data = [
-                    'id_page'           => $key,
-                    'id_lang'           => $k,
-                    'name'              => $v['name'],
-                    'name_2'            => $v['name_2'],
-                    'description_short' => $v['description_short'],
-                    'description'       => $v['description'],
-                    'meta_title'        => $v['meta_title'],
-                    'meta_description'  => $v['meta_description'],
-                    'slug'              => uniforme(trim($v['slug'])),
+                    $this->primaryKeyLang => $key,
+                    'id_lang'             => $k,
+                    'name'                => $v['name'],
+                    'name_2'              => $v['name_2'],
+                    'description_short'   => $v['description_short'],
+                    'description'         => $v['description'],
+                    'meta_title'          => $v['meta_title'],
+                    'meta_description'    => $v['meta_description'],
+                    'slug'                => uniforme(trim($v['slug'])),
                 ];
                 // Create the new participant
                 $builder->insert($data);
             } else {
                 $data = [
-                    'id_page'           => $this->tableLang->id_page,
-                    'id_lang'           => $this->tableLang->id_lang,
-                    'name'              => $v['name'],
-                    'name_2'            => $v['name_2'],
-                    'description_short' => $v['description_short'],
-                    'description'       => $v['description'],
-                    'meta_title'        => $v['meta_title'],
-                    'meta_description'  => $v['meta_description'],
-                    'slug'              => uniforme(trim($v['slug'])),
+                    $this->primaryKeyLang => $this->tableLang->{$this->primaryKeyLang},
+                    'id_lang'             => $this->tableLang->id_lang,
+                    'name'                => $v['name'],
+                    'name_2'              => $v['name_2'],
+                    'description_short'   => $v['description_short'],
+                    'description'         => $v['description'],
+                    'meta_title'          => $v['meta_title'],
+                    'meta_description'    => $v['meta_description'],
+                    'slug'                => uniforme(trim($v['slug'])),
                 ];
                 //print_r($data);
                 $builder->set($data);
-                $builder->where(['id_page' => $this->tableLang->id_page, 'id_lang' => $this->tableLang->id_lang]);
+                $builder->where([$this->primaryKeyLang => $this->tableLang->{$this->primaryKeyLang}, 'id_lang' => $this->tableLang->id_lang]);
                 $builder->update();
             }
         }
     }
+
+    // public function getDescription()
+    // {
+    //     foreach ($this->pages_langs as $lang) {
+    //         if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+    //             return $lang->description ?? null;
+    //         }
+    //     }
+    // }
+
+    // public function getDescriptionShort()
+    // {
+    //     foreach ($this->pages_langs as $lang) {
+    //         if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+    //             return $lang->description_short ?? null;
+    //         }
+    //     }
+    // }
+
+    // public function get_MetaDescription()
+    // {
+    //     foreach ($this->pages_langs as $lang) {
+    //         if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+    //             return $lang->meta_description ?? null;
+    //         }
+    //     }
+    // }
+
+    // public function get_MetaTitle()
+    // {
+    //     foreach ($this->pages_langs as $lang) {
+    //         if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+    //             return $lang->meta_title ?? null;
+    //         }
+    //     }
+    // }
+
+    // public function getName()
+    // {
+    //     if (isset($this->pages_langs)) {
+    //         foreach ($this->pages_langs as $lang) {
+    //             if (service('switchlanguage')->getIdLocale() == $lang->id_lang) {
+    //                 return $lang->name;
+    //             }
+    //         }
+    //     } else {
+    //         return $this->attributes['name'] ?? null;
+    //     }
+    // }
+    // public function getClassEntities()
+    // {
+    //     return $this->table;
+    // }
 }

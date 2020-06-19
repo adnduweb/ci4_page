@@ -9,12 +9,12 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Libraries\AssetsBO;
 use App\Libraries\Tools;
 use Adnduweb\Ci4_page\Entities\Page;
-use Adnduweb\Ci4_page\Models\PagesModel;
+use Adnduweb\Ci4_page\Models\PageModel;
 
 class AdminPagesController extends AdminController
 {
 
-    use \App\Traits\BuilderTrait;
+    use \App\Traits\BuilderModelTrait;
     use \App\Traits\ModuleTrait;
 
 
@@ -38,7 +38,7 @@ class AdminPagesController extends AdminController
         parent::__construct();
         $this->controller_type = 'adminpages';
         $this->module = "pages";
-        $this->tableModel  = new PagesModel();
+        $this->tableModel  = new PageModel();
         $this->idModule  = $this->getIdModule();
     }
 
@@ -63,16 +63,19 @@ class AdminPagesController extends AdminController
         AssetsBO::add_js([$this->get_current_theme_view('plugins/custom/ckeditor/ckeditor-classic.bundle.js', 'default')]);
         AssetsBO::add_js([$this->get_current_theme_view('controllers/medias/js/manager.js', 'default')]);
         AssetsBO::add_js([$this->get_current_theme_view('js/builder.js', 'default')]);
-        if (class_exists('\Adnduweb\Ci4_blog\Controllers\Admin\AdminArticleController'))
+
+        if (class_exists('\Adnduweb\Ci4_blog\Controllers\Admin\AdminPostsController'))
             AssetsBO::add_js([$this->get_current_theme_view('controllers/blog/js/builder.js', 'default')]);
+
         if (class_exists('\Adnduweb\Ci4_diaporama\Controllers\Admin\AdminDiaporamasController'))
             AssetsBO::add_js([$this->get_current_theme_view('controllers/diaporamas/js/builder.js', 'default')]);
+
         AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->controller . '/js/outils.js', 'default')]);
 
         if (is_null($id)) {
             $this->data['form'] = new Page($this->request->getPost());
         } else {
-            $this->data['form'] = $this->tableModel->where('id_page', $id)->first();
+            $this->data['form'] = $this->tableModel->where('id', $id)->first();
             if (empty($this->data['form'])) {
                 Tools::set_message('danger', lang('Core.not_{0}_exist', [$this->item]), lang('Core.warning_error'));
                 return redirect()->to('/' . env('CI_SITE_AREA') . '/public/pages');
@@ -82,6 +85,7 @@ class AdminPagesController extends AdminController
         $this->data['form']->builders = [];
         $this->data['form']->id_module = $this->idModule;
         $this->data['form']->id_item = $id;
+
         if (!empty($this->getBuilderIdItem($id, $this->idModule))) {
             $this->data['form']->builders = $this->getBuilderIdItem($id, $this->idModule);
             $temp = [];
@@ -91,8 +95,10 @@ class AdminPagesController extends AdminController
             ksort($temp);
             $this->data['form']->builders = $temp;
         }
-        // print_r($this->data['form']->allPages);
+
+        // print_r($this->data['form']);
         // exit;
+
         parent::renderForm($id);
         return view($this->get_current_theme_view('form', 'Adnduweb/Ci4_page'), $this->data);
     }
@@ -100,7 +106,7 @@ class AdminPagesController extends AdminController
     public function postProcessEdit($param)
     {
         // validate
-        $page = new PagesModel();
+        $page = new PageModel();
         $this->validation->setRules(['lang.1.slug' => 'required']);
         if (!$this->validation->run($this->request->getPost())) {
             Tools::set_message('danger', $this->validation->getErrors(), lang('Core.warning_error'));
@@ -114,8 +120,8 @@ class AdminPagesController extends AdminController
         }
 
         // Si le parent est la page elle meme
-        if ($this->request->getPost('id_parent') == $this->request->getPost('id_page')) {
-            Tools::set_message('danger', lang('Core.not_parent_id_page'), lang('Core.warning_error'));
+        if ($this->request->getPost('id_parent') == $this->request->getPost('id')) {
+            Tools::set_message('danger', lang('Core.not_parent_id'), lang('Core.warning_error'));
             return redirect()->back()->withInput();
         }
 
@@ -127,7 +133,7 @@ class AdminPagesController extends AdminController
 
         //On Créer un template si besoin
         if ($pageBase->template == 'code') {
-            $file =  $pageBase->id_page == '1' ? 'home' :  $pageBase->handle;
+            $file =  $pageBase->id == '1' ? 'home' :  $pageBase->handle;
             if ($file == 'home') {
                 if (!file_exists(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/' . $file . '.php')) {
                     rename(APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/home.php', APPPATH . 'Views/front/themes/' . service('settings')->setting_theme_front . '/__home.php',);
@@ -143,7 +149,7 @@ class AdminPagesController extends AdminController
             Tools::set_message('danger', $page->errors(), lang('Core.warning_error'));
             return redirect()->back()->withInput();
         }
-        $pageBase->saveLang($this->lang, $pageBase->id_page);
+        $pageBase->saveLang($this->lang, $pageBase->id);
 
         // On enregistre le Builder si existe
         $this->saveBuilder($this->request->getPost('builder'));
@@ -154,10 +160,10 @@ class AdminPagesController extends AdminController
             'url'                   => '/' . env('CI_SITE_AREA') . '/public/pages',
             'action'                => 'edit',
             'submithandler'         => $this->request->getPost('submithandler'),
-            'id'                    => $pageBase->id_page,
+            'id'                    => $pageBase->id,
         ];
 
-        $this->videCache($pageBase->id_page);
+        $this->videCache($pageBase->id);
 
         $this->redirectAfterForm($redirectAfterForm);
     }
@@ -165,7 +171,7 @@ class AdminPagesController extends AdminController
     public function postProcessAdd()
     {
         // validate
-        $page = new PagesModel();
+        $page = new PageModel();
         $this->validation->setRules(['lang.1.slug' => 'required']);
         if (!$this->validation->run($this->request->getPost())) {
             Tools::set_message('danger', $this->validation->getErrors(), lang('Core.warning_error'));
@@ -221,7 +227,7 @@ class AdminPagesController extends AdminController
                     }
 
                     $data[] = [
-                        'id_page'      => $selected,
+                        'id'      => $selected,
                         'active' => $value['active'],
                     ];
                 }
@@ -229,7 +235,7 @@ class AdminPagesController extends AdminController
             if ($homePage == true) {
                 return $this->respond(['status' => false, 'database' => true, 'display' => 'modal', 'message' => lang('Js.aucun_enregistrement_effectue')], 200);
             } else {
-                if ($this->tableModel->updateBatch($data, 'id_page')) {
+                if ($this->tableModel->updateBatch($data, 'id')) {
                     return $this->respond(['status' => true, 'message' => lang('Js.your_seleted_records_statuses_have_been_updated')], 200);
                 } else {
                     return $this->respond(['status' => false, 'database' => true, 'display' => 'modal', 'message' => lang('Js.aucun_enregistrement_effectue')], 200);
@@ -275,9 +281,9 @@ class AdminPagesController extends AdminController
         return $this->failUnauthorized(lang('Js.not_autorized'), 400);
     }
 
-    protected function videCache(int $id_page)
+    protected function videCache(int $id)
     {
-        foreach (glob(WRITEPATH . 'cache/pages:' . $id_page . '*') as $file) {
+        foreach (glob(WRITEPATH . 'cache/pages:' . $id . '*') as $file) {
             //echo $file; exit;
             cache()->delete(str_replace(WRITEPATH . 'cache/', '', $file));
         }

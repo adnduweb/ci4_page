@@ -2,7 +2,7 @@
 
 namespace Adnduweb\Ci4_page\Database\Seeds;
 
-use Adnduweb\Ci4_page\Models\PagesModel;
+use Adnduweb\Ci4_page\Models\PageModel;
 use joshtronic\LoremIpsum;
 
 class PageSeeder extends \CodeIgniter\Database\Seeder
@@ -13,50 +13,63 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         // Define default project setting templates
         $rows = [
             [
-                'id_page'            => 1,
+                'id'                 => 1,
                 'id_parent'          => 0,
                 'template'           => 'page_default',
                 'active'             => 1,
                 'no_follow_no_index' => 0,
-                'handle'             => null,
+                'handle'             => 'home',
                 'order'              => 1,
                 'created_at'         => date('Y-m-d H:i:s'),
             ],
             [
-                'id_page'            => 2,
+                'id'                 => 2,
                 'id_parent'          => 0,
                 'template'           => 'page_default',
                 'active'             => 1,
                 'no_follow_no_index' => 0,
-                'handle'             => null,
+                'handle'             => 'mentions-legales',
                 'order'              => 1,
                 'created_at'         => date('Y-m-d H:i:s'),
             ],
             [
-                'id_page'            => 3,
+                'id'            => 3,
                 'id_parent'          => 0,
                 'template'           => 'page_default',
                 'active'             => 1,
                 'no_follow_no_index' => 0,
-                'handle'             => null,
+                'handle'             => 'politique-de-confidentialite',
                 'order'              => 1,
                 'created_at'         => date('Y-m-d H:i:s'),
             ],
             [
-                'id_page'            => 4,
+                'id'                 => 4,
                 'id_parent'          => 0,
                 'template'           => 'page_contact',
                 'active'             => 1,
                 'no_follow_no_index' => 0,
-                'handle'             => null,
+                'handle'             => 'contactez-nous',
                 'order'              => 1,
                 'created_at'         => date('Y-m-d H:i:s'),
             ]
 
         ];
+
+        // Check for and create project setting templates
+        //$pages = new PageModel();
+        $db = \Config\Database::connect();
+        foreach ($rows as $row) {
+            $page = $db->table('pages')->where('id', $row['id'])->get()->getRow();
+            //print_r($page); exit;
+            if (empty($page)) {
+                // No setting - add the row
+                $db->table('pages')->insert($row);
+            }
+        }
+
         $rowsLang = [
             [
-                'id_page'           => 1,
+                'page_id'           => 1,
                 'id_lang'           => 1,
                 'name'              => 'Welcome to CodeIgniter',
                 'name_2'            => 'The small framework with powerful features',
@@ -68,7 +81,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'slug'              => '/'
             ],
             [
-                'id_page'           => 2,
+                'page_id'           => 2,
                 'id_lang'           => 1,
                 'name'              => 'Mentions légales',
                 'name_2'            => $lipsum->words(5),
@@ -80,7 +93,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'slug'              => 'mentions-legales'
             ],
             [
-                'id_page'           => 3,
+                'page_id'           => 3,
                 'id_lang'           => 1,
                 'name'              => 'Politique de confidentialité',
                 'name_2'            => $lipsum->words(5),
@@ -89,10 +102,10 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'meta_title'        => $lipsum->sentence(),
                 'meta_description'  => $lipsum->sentence(),
                 'tags'              => 'test',
-                'slug'              => 'poltiique-de-confidentialite'
+                'slug'              => 'politique-de-confidentialite'
             ],
             [
-                'id_page'           => 4,
+                'page_id'           => 4,
                 'id_lang'           => 1,
                 'name'              => 'Contactez nous',
                 'name_2'            => $lipsum->words(5),
@@ -101,29 +114,18 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'meta_title'        => $lipsum->sentence(),
                 'meta_description'  => $lipsum->sentence(),
                 'tags'              => 'test',
-                'slug'              => 'Contactez-nous'
+                'slug'              => 'contactez-nous'
             ]
 
         ];
 
-        // Check for and create project setting templates
-        //$pages = new PagesModel();
-        $db = \Config\Database::connect();
-        foreach ($rows as $row) {
-            $page = $db->table('page')->where('id_page', $row['id_page'])->get()->getRow();
-            //print_r($page); exit;
-            if (empty($page)) {
-                // No setting - add the row
-                $db->table('page')->insert($row);
-            }
-        }
 
         foreach ($rowsLang as $rowLang) {
-            $pagelang = $db->table('page_lang')->where('id_page', $rowLang['id_page'])->get()->getRow();
+            $pagelang = $db->table('pages_langs')->where('page_id', $rowLang['page_id'])->get()->getRow();
 
             if (empty($pagelang)) {
                 // No setting - add the row
-                $db->table('page_lang')->insert($rowLang);
+                $db->table('pages_langs')->insert($rowLang);
             }
         }
 
@@ -210,7 +212,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
 
         //Gestion des module
         $rowsModulePages = [
-            'name'       => 'pages',
+            'name'       => 'page',
             'namespace'  => 'Adnduweb\Ci4_page',
             'active'     => 1,
             'version'    => '1.0.2',
