@@ -38,10 +38,10 @@ class Page extends Entity
      */
     protected $casts = [];
 
-    public function getIdPage()
-    {
-        return $this->attributes['id'] ?? null;
-    }
+    // public function getIdPage()
+    // {
+    //     return $this->attributes['id'] ?? null;
+    // }
 
     public function getSlug()
     {

@@ -10,6 +10,7 @@ class PageDefault
 {
 
     public $title;
+    public $description;
     public $meta_title;
     public $meta_description;
     public $url;
@@ -26,6 +27,15 @@ class PageDefault
         $this->url = $page['url'];
     }
 
+        /** 
+     *
+     * l'ID du module
+     */
+    public function getIdItem()
+    {
+        return md5($this->meta_title);
+    }
+
     public function getBMetaTitle()
     {
         return $this->meta_title;
@@ -36,9 +46,14 @@ class PageDefault
         return $this->meta_description;
     }
 
-    public function getTitle()
+    public function getBName()
     {
         return $this->title;
+    }
+
+    public function getBDescription()
+    {
+        return $this->description;
     }
 
     public function getStwichLangSlug()

@@ -13,6 +13,7 @@ class Migration_create_table_page extends Migration
             'id_parent'          => ['type' => 'INT', 'constraint' => 11, 'default' => 0],
             'template'           => ['type' => 'VARCHAR', 'constraint' => 255],
             'active'             => ['type' => 'INT', 'constraint' => 11],
+            'visible_title'      => ['type' => 'INT', 'constraint' => 11, 'default' => 0],
             'no_follow_no_index' => ['type' => 'INT', 'constraint' => 11, 'null' => true],
             'handle'             => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
             'order'              => ['type' => 'INT', 'constraint' => 11, 'null' => true],

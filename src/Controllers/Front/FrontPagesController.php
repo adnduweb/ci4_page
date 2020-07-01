@@ -28,15 +28,6 @@ class FrontPagesController extends \App\Controllers\Front\FrontController
     public function show($slug)
     {
 
-        $locale = 1;
-        $setting_supportedLocales = unserialize(service('Settings')->setting_supportedLocales);
-        foreach ($setting_supportedLocales as $setting_supportedLocale) {
-            $v = explode('|', $setting_supportedLocale);
-            if ($this->request->getLocale() == $v[1]) {
-                $locale = $v[0];
-            }
-        }
-
         $pageLight = $this->tableModel->getIdPageBySlug($slug);
         if (empty($pageLight)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException(lang('Core.Cannot find the page item : {0}', [$slug]));

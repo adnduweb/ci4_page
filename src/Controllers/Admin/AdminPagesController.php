@@ -30,7 +30,7 @@ class AdminPagesController extends AdminController
     public $fieldList = 'name';
     public $add = true;
     public $multilangue = true;
-    public $pagesRestrict = ['1', '2', '3', '4'];
+    public $pagesRestrict = ['1', '2', '3', '4', '5'];
 
 
     public function __construct()
@@ -129,6 +129,7 @@ class AdminPagesController extends AdminController
         $pageBase = new Page($this->request->getPost());
 
         $pageBase->active = $this->request->getPost('active') ? 1 : 0;
+        $pageBase->visible_title = isset($pageBase->visible_title) ? 1 : 0;
         $this->lang = $this->request->getPost('lang');
 
         //On Créer un template si besoin
@@ -181,6 +182,7 @@ class AdminPagesController extends AdminController
         // Try to create the user
         $pageBase = new Page($this->request->getPost());
         $pageBase->active = $this->request->getPost('active') ? 1 : 0;
+        $pageBase->visible_title = isset($pageBase->visible_title) ? 1 : 0;
         $pageBase->handle = uniforme(trim($this->request->getPost('lang[1][slug]')));
 
         if (!$page->save($pageBase)) {

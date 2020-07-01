@@ -17,6 +17,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'id_parent'          => 0,
                 'template'           => 'page_default',
                 'active'             => 1,
+                'visible_title'      => 1,
                 'no_follow_no_index' => 0,
                 'handle'             => 'home',
                 'order'              => 1,
@@ -27,16 +28,18 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'id_parent'          => 0,
                 'template'           => 'page_default',
                 'active'             => 1,
+                'visible_title'      => 1,
                 'no_follow_no_index' => 0,
                 'handle'             => 'mentions-legales',
                 'order'              => 1,
                 'created_at'         => date('Y-m-d H:i:s'),
             ],
             [
-                'id'            => 3,
+                'id'                 => 3,
                 'id_parent'          => 0,
                 'template'           => 'page_default',
                 'active'             => 1,
+                'visible_title'      => 1,
                 'no_follow_no_index' => 0,
                 'handle'             => 'politique-de-confidentialite',
                 'order'              => 1,
@@ -47,11 +50,24 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'id_parent'          => 0,
                 'template'           => 'page_contact',
                 'active'             => 1,
+                'visible_title'      => 1,
                 'no_follow_no_index' => 0,
                 'handle'             => 'contactez-nous',
                 'order'              => 1,
                 'created_at'         => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id'                 => 5,
+                'id_parent'          => 0,
+                'template'           => 'page_default',
+                'active'             => 1,
+                'visible_title'      => 1,
+                'no_follow_no_index' => 0,
+                'handle'             => 'condition-utilisation',
+                'order'              => 1,
+                'created_at'         => date('Y-m-d H:i:s'),
             ]
+
 
         ];
 
@@ -115,6 +131,18 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
                 'meta_description'  => $lipsum->sentence(),
                 'tags'              => 'test',
                 'slug'              => 'contactez-nous'
+            ],
+            [
+                'page_id'           => 5,
+                'id_lang'           => 1,
+                'name'              => "Condition d'utilisation",
+                'name_2'            => $lipsum->words(5),
+                'description_short' => $lipsum->sentence(),
+                'description'       => $lipsum->paragraphs(5),
+                'meta_title'        => $lipsum->sentence(),
+                'meta_description'  => $lipsum->sentence(),
+                'tags'              => 'test',
+                'slug'              => 'condition-utilisation'
             ]
 
         ];

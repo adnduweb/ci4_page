@@ -17,9 +17,22 @@
     </div>
 </div>
 
+<div class="form-group form-group-sm row">
+    <label class="col-xl-2 col-lg-3 col-form-label"><?= ucfirst(lang('Core.visible_title')); ?></label>
+    <div class="col-lg-9 col-xl-10">
+        <span class="kt-switch kt-switch--icon">
+            <label>
+                <input type="checkbox" <?= ($form->visible_title == true) ? 'checked="checked"' : ''; ?> name="visible_title" value="1">
+                <span></span>
+            </label>
+        </span>
+    </div>
+</div>
+
+
 <?php if (!empty($form->id)) { ?>
     <div class="form-group row">
-        <label class="col-form-label col-3 text-lg-right text-left">Cache</label>
+        <label class="col-form-label col-xl-2 col-lg-3">Cache</label>
         <div class="col-9">
             <button type="button" class="btn btn-light-primary font-weight-bold btn-sm videCache" data-id-page="<?= $form->id; ?>"><?= lang('Core.Vider le cache'); ?></button>
             <div class="form-text text-muted mt-3">
@@ -73,8 +86,8 @@
 <div class="form-group row kt-shape-bg-color-1">
     <label for="sous_name" class="col-xl-2 col-lg-3 col-form-label"><?= ucfirst(lang('Core.slug')); ?>* : </label>
     <div class="col-lg-9 col-xl-10">
-        <?= form_input_spread('slug', $form->_prepareLang(), 'id="slug" class="form-control lang"', 'text', true); ?>
-        <span class="form-text text-muted"><?= lang('Core.Voir la page :'); ?> <a target="_blank" href="<?= base_urlFront(getLinkPageAdmin($form, service('settings')->setting_bo_id_lang)); ?>"><?= base_urlFront(getLinkPageAdmin($form, service('settings')->setting_bo_id_lang)); ?></a></span>
+        <?= form_input_spread('slug', $form->_prepareLang(), 'id="slug" class="form-control lang"', 'text', true); ?> 
+        <span class="form-text text-muted"><?= lang('Core.Voir la page :'); ?> <a target="_blank" href="<?= base_urlFront(getLinkPageAdmin($form, service('switchlanguage')->getIdLocale())); ?>"><?= base_urlFront(getLinkPageAdmin($form, service('switchlanguage')->getIdLocale())); ?></a></span>
     </div>
 </div>
 
