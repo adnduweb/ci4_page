@@ -5,4 +5,6 @@ use CodeIgniter\Config\BaseConfig;
 class Page extends BaseConfig
 {
   public $paginationPerPage = 10;
+
+  public $urlMenuAdmin = 'public';
 }

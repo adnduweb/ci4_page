@@ -159,18 +159,17 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
 
         $rowsTabs = [
             [
-                'id_parent'         => 17,
-                'depth'             => 2,
-                'left'              => 33,
-                'right'             => 34,
-                'position'          => 1,
-                'section'           => 0,
-                'module'            => 'Adnduweb\Ci4_page',
-                'class_name'        => 'AdminPages',
-                'active'            =>  1,
-                'icon'              => '',
-                'slug'             => 'pages',
-                'name_controller'       => ''
+                'id_parent'       => 17,
+                'depth'           => 2,
+                'left'            => 33,
+                'right'           => 34,
+                'position'        => 1,
+                'section'         => 0,
+                'namespace'       => 'Adnduweb\Ci4_page',
+                'class_name'      => 'page',
+                'active'          => 1,
+                'icon'            => '',
+                'slug'            => 'pages',
             ],
         ];
 
@@ -186,7 +185,7 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
         ];
 
         foreach ($rowsTabs as $row) {
-            $tab = $db->table('tabs')->where('class_name', $row['class_name'])->get()->getRow();
+            $tab = $db->table('tabs')->where('class_name', $row['class_name'])->where('namespace', $row['namespace'])->get()->getRow();
             //print_r($tab); exit;
             if (empty($tab)) {
                 // No setting - add the row
@@ -208,22 +207,22 @@ class PageSeeder extends \CodeIgniter\Database\Seeder
          */
         $rowsPermissionsPages = [
             [
-                'name'              => 'Pages::views',
+                'name'              => 'Page::view',
                 'description'       => 'Voir les pages',
                 'is_natif'          => '0',
             ],
             [
-                'name'              => 'Pages::create',
+                'name'              => 'Page::create',
                 'description'       => 'Créer des pages',
                 'is_natif'          => '0',
             ],
             [
-                'name'              => 'Pages::edit',
+                'name'              => 'Page::edit',
                 'description'       => 'Modifier les pages',
                 'is_natif'          => '0',
             ],
             [
-                'name'              => 'Pages::delete',
+                'name'              => 'Page::delete',
                 'description'       => 'Supprimer des pages',
                 'is_natif'          => '0',
             ]

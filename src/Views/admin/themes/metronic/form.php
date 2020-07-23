@@ -4,7 +4,7 @@
 	<?= form_open_multipart('', ['id' => 'kt_apps_user_add_user_form', 'class' => 'kt-form', 'novalidate' => false]); ?>
 	<input type="hidden" name="action" value="<?= $action; ?>" />
 	<input type="hidden" name="module" value="<?= base64_encode('Adnduweb\Ci4_page'); ?>" />
-	<input type="hidden" name="controller" value="AdminPagesController" />
+	<input type="hidden" name="controller" value="AdminPageController" />
 
 
 	<?= $this->include('/admin/themes/metronic/__partials/kt_form_toolbar') ?>

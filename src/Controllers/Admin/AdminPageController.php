@@ -11,40 +11,100 @@ use App\Libraries\Tools;
 use Adnduweb\Ci4_page\Entities\Page;
 use Adnduweb\Ci4_page\Models\PageModel;
 
-class AdminPagesController extends AdminController
+class AdminPageController extends AdminController
 {
 
     use \App\Traits\BuilderModelTrait;
     use \App\Traits\ModuleTrait;
 
+    /**
+     *  Module Object
+     */
+    public $module = true;
 
     /**
-     *  * @var Module */
-    public $module      = true;
-    public $name_module = 'pages';
+     * name controller
+     */
+    public $controller = 'page';
+
+    /**
+     * Localize slug
+     */
+    public $pathcontroller  = '/pages';
+
+    /**
+     * Localize namespace
+     */
+    public $namespace = 'Adnduweb/Ci4_page';
+
+    /**
+     * Id Module
+     */
     protected $idModule;
-    public $controller = 'pages';
-    public $item = 'page';
-    public $type = 'Adnduweb/Ci4_page';
-    public $pathcontroller  = '/public/pages';
+
+    /**
+     * Localize slug
+     */
+    public $dirList  = 'pages';
+
+    /**
+     * Display default list column
+     */
     public $fieldList = 'name';
+
+    /**
+     * Bouton add
+     */
     public $add = true;
+
+    /**
+     * Display Multilangue
+     */
     public $multilangue = true;
+
+    /**
+     * Event fake data
+     */
+    public $fake = false;
+
+    /**
+     * Update item List
+     */
+    public $toolbarUpdate = true;
+
+    /**
+     * @var \App\Models\FormModel
+     */
+    public $tableModel;
+
+    /**
+     * Restrict pages not deleted
+     */
     public $pagesRestrict = ['1', '2', '3', '4', '5'];
 
-
+    /**
+     * Page constructor.
+     *
+     */
     public function __construct()
     {
         parent::__construct();
         $this->controller_type = 'adminpages';
-        $this->module = "pages";
+
         $this->tableModel  = new PageModel();
         $this->idModule  = $this->getIdModule();
+
+        // On ajoute les pages restreintes
+        $this->data['paramJs']['restrictPage'] = json_encode($this->pagesRestrict);
+        $this->data['paramJs']['baseSegmentAdmin'] = config('Page')->urlMenuAdmin;
+
+        $this->pathcontroller  = '/'.config('Page')->urlMenuAdmin . $this->pathcontroller;
+
     }
 
     public function renderViewList()
     {
-        AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->controller . '/js/list.js', 'default')]);
+        AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->dirList . '/js/list.js', 'default')]);
         $parent =  parent::renderViewList();
         if (is_object($parent) && $parent->getStatusCode() == 307) {
             return $parent;
@@ -77,8 +137,8 @@ class AdminPagesController extends AdminController
         } else {
             $this->data['form'] = $this->tableModel->where('id', $id)->first();
             if (empty($this->data['form'])) {
-                Tools::set_message('danger', lang('Core.not_{0}_exist', [$this->item]), lang('Core.warning_error'));
-                return redirect()->to('/' . env('CI_SITE_AREA') . '/public/pages');
+                Tools::set_message('danger', lang('Core.not_{0}_exist', [$this->controller]), lang('Core.warning_error'));
+                return redirect()->to('/' . env('CI_SITE_AREA') . $this->pathcontroller);
             }
         }
         $this->data['form']->allPages = $this->tableModel->getAllPageOptionParent();
@@ -87,6 +147,7 @@ class AdminPagesController extends AdminController
         $this->data['form']->id_item = $id;
 
         if (!empty($this->getBuilderIdItem($id, $this->idModule))) {
+
             $this->data['form']->builders = $this->getBuilderIdItem($id, $this->idModule);
             $temp = [];
             foreach ($this->data['form']->builders as $builder) {
@@ -94,13 +155,14 @@ class AdminPagesController extends AdminController
             }
             ksort($temp);
             $this->data['form']->builders = $temp;
+
         }
 
         // print_r($this->data['form']);
         // exit;
 
         parent::renderForm($id);
-        return view($this->get_current_theme_view('form', 'Adnduweb/Ci4_page'), $this->data);
+        return view($this->get_current_theme_view('form', $this->namespace), $this->data);
     }
 
     public function postProcessEdit($param)
@@ -158,7 +220,7 @@ class AdminPagesController extends AdminController
         // Success!
         Tools::set_message('success', lang('Core.save_data'), lang('Core.cool_success'));
         $redirectAfterForm = [
-            'url'                   => '/' . env('CI_SITE_AREA') . '/public/pages',
+            'url'                   => '/' . env('CI_SITE_AREA') . $this->pathcontroller,
             'action'                => 'edit',
             'submithandler'         => $this->request->getPost('submithandler'),
             'id'                    => $pageBase->id,
@@ -207,7 +269,7 @@ class AdminPagesController extends AdminController
         // Success!
         Tools::set_message('success', lang('Core.save_data'), lang('Core.cool_success'));
         $redirectAfterForm = [
-            'url'                   => '/' . env('CI_SITE_AREA') . '/public/pages',
+            'url'                   => '/' . env('CI_SITE_AREA') . $this->pathcontroller,
             'action'                => 'add',
             'submithandler'         => $this->request->getPost('submithandler'),
             'id'                    => $pageBaseId,

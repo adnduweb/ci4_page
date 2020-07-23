@@ -19,6 +19,7 @@ class PageModel extends Model
     protected $primaryKey     = 'id';
     protected $primaryKeyLang = 'page_id';
     protected $returnType     = Page::class;
+    protected $localizeFile   = 'Adnduweb\Ci4_page\Models\PageModel';
     protected $useSoftDeletes = true;
     protected $allowedFields  = [
         'id_parent', 'template', 'active', 'visible_title', 'no_follow_no_index', 'handle', 'order'

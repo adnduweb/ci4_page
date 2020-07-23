@@ -10,6 +10,7 @@ class PageLangModel extends Model
     protected $tableLang      = 'pages_langs';
     protected $primaryKey     = 'page_id';
     protected $returnType     = 'object';
-    protected $skipValidation     = false;
+    protected $localizeFile   = 'Adnduweb\Ci4_page\Models\PageLangModel';
+    protected $skipValidation = false;
 
 }
