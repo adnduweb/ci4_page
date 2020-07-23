@@ -19,7 +19,7 @@
         "php": "^7.2",
         "adnduweb/ci4_menu": "^1",
         "adnduweb/ci4_diaporama": "^1",
-        "adnduweb/ci4_blog": "^1",
+        "adnduweb/ci4_blog": "^1"
     },
     "require-dev": {
         "codeigniter4/codeigniter4-standard": "^1.0.1",
