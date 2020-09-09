@@ -83,6 +83,11 @@ class AdminPageController extends AdminController
     public $pagesRestrict = ['1', '2', '3', '4', '5'];
 
     /**
+     * Retour
+     */
+    public $toolbarBack = true;
+
+    /**
      * Page constructor.
      *
      */
@@ -122,7 +127,7 @@ class AdminPageController extends AdminController
     {
         AssetsBO::add_js([$this->get_current_theme_view('plugins/custom/ckeditor/ckeditor-classic.bundle.js', 'default')]);
         AssetsBO::add_js([$this->get_current_theme_view('controllers/medias/js/manager.js', 'default')]);
-        AssetsBO::add_js([$this->get_current_theme_view('js/builder.js', 'default')]);
+//        AssetsBO::add_js([$this->get_current_theme_view('js/builder.js', 'default')]);
 
         if (class_exists('\Adnduweb\Ci4_blog\Controllers\Admin\AdminPostsController'))
             AssetsBO::add_js([$this->get_current_theme_view('controllers/blog/js/builder.js', 'default')]);
@@ -130,7 +135,7 @@ class AdminPageController extends AdminController
         if (class_exists('\Adnduweb\Ci4_diaporama\Controllers\Admin\AdminDiaporamasController'))
             AssetsBO::add_js([$this->get_current_theme_view('controllers/diaporamas/js/builder.js', 'default')]);
 
-        AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->controller . '/js/outils.js', 'default')]);
+        AssetsBO::add_js([$this->get_current_theme_view('controllers/' . $this->dirList . '/js/outils.js', 'default')]);
 
         if (is_null($id)) {
             $this->data['form'] = new Page($this->request->getPost());
